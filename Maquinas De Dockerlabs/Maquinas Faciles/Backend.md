@@ -66,7 +66,7 @@ _Para generar un error en la consulta, ponemos la comilla. esto, por lógica, ce
 SELECT * FROM usuarios WHERE usuario = ‘’ ’ AND password = 'tu contraseña';
 ```
 
->Bien, desde este punto podríamos intentar cambiar la lógica de la consulta para saltarnos el panel de Login, pero, tristemente no podemos hacer un Bypass así de fácil (_Aun así, puedes ver su explotación en la maquina [Injection](Maquinas%20De%20Dockerlabs/Maquinas%20Muy%20Fasiles/Injection.md)_). También podemos usar SQLMap para explotar la vulnerabilidad de manera automatizada, pero ya que complicándose se aprende mas, vamos a intentar explotarlo manualmente ╰(*°▽°*)╯ 
+>Bien, desde este punto podríamos intentar cambiar la lógica de la consulta para saltarnos el panel de Login, pero, tristemente no podemos hacer un Bypass así de fácil (_Aun así, puedes ver su explotación en la maquina [Injection](Injection.md)_). También podemos usar SQLMap para explotar la vulnerabilidad de manera automatizada, pero ya que complicándose se aprende mas, vamos a intentar explotarlo manualmente ╰(*°▽°*)╯ 
 
 >El primero paso es determinar si podemos controlar el flujo de la consulta, es decir, ya sabemos que podemos ver errores que no deberíamos ver al romper una consulta, debido a que la entrada de usuario no fue bien sanitizada, pero debemos determinar si podemos inyectar mas parámetros en la consulta para que sean leídos por la base de datos, para esto, haremos una inyección simple:
 
