@@ -3,16 +3,16 @@
 
 >Bueno bueno, hoy haremos una maquina sencilla para reforzar conceptos de SQLI Error Based
 
-![\1](Attachments/Pasted%20image%2020250527020629.png)
+![\1](/Attachments/Pasted%20image%2020250527020629.png)
 
 >Así que sin mas, empezamos :3
 >Primero, levantamos la máquina, descomprimiendo el “.zip” y ejecutando el script de automatización:
 
-![\1](Attachments/Pasted%20image%2020250527020730.png)
+![\1](/Attachments/Pasted%20image%2020250527020730.png)
 
 >Con Ping, enviamos unas cuantas trazas ICMP para verificar la conexión con la maquina:
 
-![\1](Attachments/Pasted%20image%2020250527020812.png)
+![\1](/Attachments/Pasted%20image%2020250527020812.png)
 _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message Protocol” tipo (Echo Request) a la ip victima, esta misma, al estar en funcionamiento, revisa las cabeceras del paquete para determinar que es para ella, y responde con un (Echo Reply).)
 
 1. _Podemos ver el orden de estas tramas ICMP en el apartado “icmp_seq=”,
@@ -21,7 +21,7 @@ _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message P
 
 >Sabiendo que tenemos conexión con la maquina, procedemos a escanear con Nmap puertos abiertos y servicios de la maquina:
 
-![\1](Attachments/Pasted%20image%2020250527021108.png)
+![\1](/Attachments/Pasted%20image%2020250527021108.png)
 1. _-- min-rate 5000 (quiero tramitar mínimo 5000 paquetes por segundo) esto para que el escaneo vaya con bastante agilidad._
 2. _-n (no deseo que nmap haga una resolución DNS automática)
 3. _-p- (quiero escanear los 65535 puertos del sistema, no los 1000 más comunes, como normalmente hace nmap)._
@@ -31,28 +31,28 @@ _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message P
 >Vemos el puerto 22 SSH con un servicio OpenSSH relativamente actual, y un puerto 80 con un servicio Apache 2.4.61 corriendo.
 >Vamos a la Web en el puerto 80 para conocer mas:
 
-![\1](Attachments/Pasted%20image%2020250527021542.png)
+![\1](/Attachments/Pasted%20image%2020250527021542.png)
 
 >Podemos observar una pagina bastante simple con un Home Page (Index.html) y un panel de Login (Login.html)
 >Ese login se ve prometedor, así que vamos allí:
 
-![\1](Attachments/Pasted%20image%2020250527021808.png)
+![\1](/Attachments/Pasted%20image%2020250527021808.png)
 
 >El panel es bastante simple, si introducimos credenciales invalidas nos direcciona a una pagina de error:
 
-![\1](Attachments/Pasted%20image%2020250527022021.png)
+![\1](/Attachments/Pasted%20image%2020250527022021.png)
 _Intentamos inicial sesión con un usuario y contraseña cualquiera_
 
-![\1](Attachments/Pasted%20image%2020250527022108.png)
+![\1](/Attachments/Pasted%20image%2020250527022108.png)
 _La pagina nos redirecciona a "logerror.html" si las credenciales son erróneas_
 
 >Por detrás, hay una consulta a una base de datos para validar usuario y contraseña. 
 >Para verificar si el panel es vulnerable a "SQL Injection", introducimos una comilla como valor en el panel:
 
-![\1](Attachments/Pasted%20image%2020250527022447.png)
+![\1](/Attachments/Pasted%20image%2020250527022447.png)
 _Introducimos una comilla en el panel de usuario, y una contraseña cualquiera
 
-![\1](Attachments/Pasted%20image%2020250527022541.png)
+![\1](/Attachments/Pasted%20image%2020250527022541.png)
 _Respuesta de la web_
 
 >Vemos que la web nos responde con un error de SQL, esto quiere decir que el panel muy probablemente es vulnerable a SQLI. 
@@ -70,7 +70,7 @@ SELECT * FROM usuarios WHERE usuario = ‘’ ’ AND password = 'tu contraseña
 
 >El primero paso es determinar si podemos controlar el flujo de la consulta, es decir, ya sabemos que podemos ver errores que no deberíamos ver al romper una consulta, debido a que la entrada de usuario no fue bien sanitizada, pero debemos determinar si podemos inyectar mas parámetros en la consulta para que sean leídos por la base de datos, para esto, haremos una inyección simple:
 
-![\1](Attachments/Pasted%20image%2020250527024844.png)
+![\1](/Attachments/Pasted%20image%2020250527024844.png)
 1. _Con el operador lógico "or" le decimos a la web "si la anterior consulta es falsa , ejecuta esto"_
 2. _Sleep(2) demora la consulta en la base de datos 2 segundos mas de lo habitual_
 3. -- - Es una manera de cerrar la consulta y comentar todo lo que sigue tras de ella
@@ -90,30 +90,30 @@ SELECT * FROM usuarios WHERE usuario = ‘’ OR sleep(2);
 
 >Vamos desde el principio, intentando describir paso a paso, para la explotación utilizaremos Burpsuite:
 
-![\1](Attachments/Pasted%20image%2020250528015746.png)
+![\1](/Attachments/Pasted%20image%2020250528015746.png)
 _Interceptamos una petición con la ventana proxy de burpsuite._
 
-![\1](Attachments/Pasted%20image%2020250528015930.png)
+![\1](/Attachments/Pasted%20image%2020250528015930.png)
 _Con CTRL+R enviamos la petición al repeater para mayor comodidad_
 
 >Para descubrir el numero de columnas que nos retorna el panel utilizamos la inyección  "ORDER BY", que nos permite listar la cantidad de columnas existentes, en teoría, el numero exacto de columnas debería ser el anterior al que nos da un error:
 
-![\1](Attachments/Pasted%20image%2020250528020727.png)
+![\1](/Attachments/Pasted%20image%2020250528020727.png)
 _Vemos que al inyectar "order by 100" la web nos devuelve un error, quiere decir que no es el numero correcto, lo mas optimo, seria probar desde el 1 hasta que obtengamos el primer error_
 
-![\1](Attachments/Pasted%20image%2020250528020943.png)
+![\1](/Attachments/Pasted%20image%2020250528020943.png)
 _Vemos que al inyectar "Order By 3" no recibimos error alguno_
 
-![\1](Attachments/Pasted%20image%2020250528021112.png)
+![\1](/Attachments/Pasted%20image%2020250528021112.png)
 _Pero, al inyectar "Order By 4" La pagina nos dirige a un error, es decir, que solamente son 3 columnas las que nos retorna el panel_
 
 >Desde este punto se complica un poco, en general procederíamos con un "UNION SELECT 1,2,3", si el error nos devuelve uno de esos números, sabríamos que allí es donde iría la inyección (Si el error nos devuelve un dos, seguiríamos la inyección dentro de ese campo UNION SELECT 1,(Aquí seguiríamos inyectando),3).
 >Pero, la web no nos lo permite:
 
-![\1](Attachments/Pasted%20image%2020250528021827.png)
+![\1](/Attachments/Pasted%20image%2020250528021827.png)
 _Vemos por el código de estado 302 que se aplica una redirección, y la pagina no nos devuelve el error que necesitamos para seguir inyectando_
 
-![\1](Attachments/Pasted%20image%2020250528155455.png)
+![\1](/Attachments/Pasted%20image%2020250528155455.png)
 _Si lo intentamos con un operador OR al principio, si que nos devuelve un error, pero este no nos dice nada._
 
 >Para este punto podríamos seguir inyectando con otra metodología de SQLI, como "Boolean Based" o "Time Based" que son bastante mas complejas, pero para no complicarnos tanto, vamos a generar un error en la consulta, para obligar a SQL a devolvernos información sensible.
@@ -127,7 +127,7 @@ _A la función updatexml le pasamos 3 parámetros, el primero (1) será un nodo 
 
 >Al generar un error, la consulta nos retornara como parte del mensaje la instrucción de "concat()":
 
-![\1](Attachments/Pasted%20image%2020250528163320.png)
+![\1](/Attachments/Pasted%20image%2020250528163320.png)
 _La respuesta Users hace referencia a la base de datos actual (Utilizada por el panel de login)_
 
 >Y Vemos que funciona :3, si queremos listar las demás bases de datos, lo podemos lograr con la siguiente inyección:
@@ -139,7 +139,7 @@ _La forma de abusar de la función es la misma, solo que ahora, con la sintaxis 
 
 >Si lo aplicamos así:
 
-![\1](Attachments/Pasted%20image%2020250528164500.png)
+![\1](/Attachments/Pasted%20image%2020250528164500.png)
 _Vemos que la web nos devuelve un error "Subquery returns more than 1 row" porque la respuesta de la Query tiene demasiadas filas, y por la manera en la que estamos realizando la inyección solamente podemos listar de a 1. Para ello, en la consulta aplicaremos un limite de respuestas_
 
 ```sql
@@ -147,18 +147,18 @@ updatexml(1,concat(0x7e,(SELECT schema_name FROM information_schema.schemata LIM
 ```
 _Con "LIMIT 0,1" obligamos a la consulta a devolver solamente la primera fila_
 
-![\1](Attachments/Pasted%20image%2020250528165133.png)
+![\1](/Attachments/Pasted%20image%2020250528165133.png)
 _La respuesta del panel, nos da un error con el nombre de la primera base de datos_
 
 >Para listar las demás, vamos aumentando el primer numero (1.1, 2.1, 3.1) para optener filas diferentes de la misma respuesta:
 
-![\1](Attachments/Pasted%20image%2020250528165440.png)
+![\1](/Attachments/Pasted%20image%2020250528165440.png)
 _Obtenemos la Base De Datos sys_
-![\1](Attachments/Pasted%20image%2020250528165458.png)
+![\1](/Attachments/Pasted%20image%2020250528165458.png)
 _Obtenemos la Base De Datos mysql_
-![\1](Attachments/Pasted%20image%2020250528165520.png)
+![\1](/Attachments/Pasted%20image%2020250528165520.png)
 _Obtenemos la Base De Datos performance_schema
-![\1](Attachments/Pasted%20image%2020250528165540.png)
+![\1](/Attachments/Pasted%20image%2020250528165540.png)
 _Obtenemos la Base De Datos Users
 
 >Vemos que son 5 bases de datos en total, la mas prometedora es "Users", así que listaremos ahora las tablas de esa base de datos, para ello, la sintaxis de la inyección seria:
@@ -170,7 +170,7 @@ _De esta manera intentamos obtener las tablas (table_name) del esquema de inform
 
 >Esto en la practica:
 
-![\1](Attachments/Pasted%20image%2020250528170747.png)
+![\1](/Attachments/Pasted%20image%2020250528170747.png)
 
 >Parece que esta base de datos "Users" solamente tiene una tabla "usuarios", así que ahora vamos a listar las columnas de esta tabla:
 
@@ -179,11 +179,11 @@ updatexml(1,concat(0x7e,(SELECT column_name FROM information_schema.columns WHER
 ```
 _seleccionamos las columnas (column_name) de el esquema de información de columnas (information_schema.columns) donde el nombre de la tabla (table_name) es... Con LIMIT, filtramos la respuesta entre filas_
 
-![\1](Attachments/Pasted%20image%2020250528171610.png)
+![\1](/Attachments/Pasted%20image%2020250528171610.png)
 _La Query nos devuelve la columna id_
-![\1](Attachments/Pasted%20image%2020250528171638.png)
+![\1](/Attachments/Pasted%20image%2020250528171638.png)
 _La Query nos devuelve la columna username_
-![\1](Attachments/Pasted%20image%2020250528171653.png)
+![\1](/Attachments/Pasted%20image%2020250528171653.png)
 _La Query nos devuelve la columna password_
 
 >Vemos columnas muy interesantes ╰(*°▽°*)╯
@@ -196,26 +196,26 @@ _Obtenemos la información de la columna de la tabla..._
 
 >Como ya sabemos cual es la tabla y las columnas, podemos extraer la información completa parte por parte:
 
-![\1](Attachments/Pasted%20image%2020250528172348.png)
+![\1](/Attachments/Pasted%20image%2020250528172348.png)
 _Obtenemos el usuario paco_
-![\1](Attachments/Pasted%20image%2020250528172409.png)
+![\1](/Attachments/Pasted%20image%2020250528172409.png)
 _Obtenemos el usuario pepe_
-![\1](Attachments/Pasted%20image%2020250528172440.png)
+![\1](/Attachments/Pasted%20image%2020250528172440.png)
 _Obtenemos el usuario juan_
 
 >Ya con los usuarios, vamos a por la columna password:
 
-![\1](Attachments/Pasted%20image%2020250528172630.png)
+![\1](/Attachments/Pasted%20image%2020250528172630.png)
 _Obtenemos la contraseña de paco_
-![\1](Attachments/Pasted%20image%2020250528172716.png)
+![\1](/Attachments/Pasted%20image%2020250528172716.png)
 _Obtenemos la contraseña de pepe_
-![\1](Attachments/Pasted%20image%2020250528172738.png)
+![\1](/Attachments/Pasted%20image%2020250528172738.png)
 _Obtenemos la contraseña de juan_
 
 >Y ya hemos explotado un SQL Injection basado en error manualmente :3
 >Probamos los usuarios y las contraseñas en ssh:
 
-![\1](Attachments/Pasted%20image%2020250530143419.png)
+![\1](/Attachments/Pasted%20image%2020250530143419.png)
 
 >Lo primero que haremos al iniciar sesión como el usuario pepe por ssh, será realizar un tratamiento de la TTY para hacerla mas interactiva, y menos propensa a errores:
  
@@ -245,15 +245,15 @@ Sí TERM está mal establecido en la máquina, cosas como clear, nano, vim, less
 
 >Bien, en búsqueda de una escalada de privilegios, revisamos el directorio root en la raíz del sistema:
 
-![\1](Attachments/Pasted%20image%2020250530152307.png)
+![\1](/Attachments/Pasted%20image%2020250530152307.png)
 
 >Nos encontramos con un archivo pass.hash que tristemente no podemos listar:
 
-![\1](Attachments/Pasted%20image%2020250530152435.png)
+![\1](/Attachments/Pasted%20image%2020250530152435.png)
 
 >En búsqueda de mas vectores de entrada, listamos archivos SUID vulnerables en la maquina:
 
-![\1](Attachments/Pasted%20image%2020250530143958.png)
+![\1](/Attachments/Pasted%20image%2020250530143958.png)
 1. _find (comando de búsqueda en Linux)
 2. _/ (búsqueda desde la raíz del sistema)
 3. _-perm -4000 (Filtramos por archivos que tengan el permiso 4000 o SUID activado)
@@ -262,30 +262,30 @@ Sí TERM está mal establecido en la máquina, cosas como clear, nano, vim, less
 >Vemos que el Binario "Grep" es SUID, esto es critico, ya que "Grep" tiene la capacitad de leer archivos y mostrarlos por pantalla. Ya que lo podemos ejecutar como el usuario propietario (root), podemos leer prácticamente cualquier archivo sin tener en cuenta permisos... según [GTFOBins](https://gtfobins.github.io/gtfobins/grep/#suid).
 >Vamos a ponerlo en practica:
 
-![\1](Attachments/Pasted%20image%2020250530144634.png)
+![\1](/Attachments/Pasted%20image%2020250530144634.png)
 _Grep toma la cadena vacía como "cualquier cosa" y devuelve todo el archivo /etc/shadow, que normalmente no tendríamos permitido listar_
 
 >Ya que podemos listar archivos, intentamos leer el "pass.hash" que descubrimos antes:
 
-![\1](Attachments/Pasted%20image%2020250530152748.png)
+![\1](/Attachments/Pasted%20image%2020250530152748.png)
 
 >Nos llevamos el hash a nuestra maquina host y lo insertamos en un archivo .txt:
 
-![\1](Attachments/Pasted%20image%2020250530153043.png)
+![\1](/Attachments/Pasted%20image%2020250530153043.png)
 
 >Nos encontramos con una cadena de 32 dígitos hexadecimales que tienen toda la pinta de ser un hash MD5, para actuar con un poco mas de seguridad, pasamos el hash por herramientas que nos ayuden a identificarlo:
 
-![\1](Attachments/Pasted%20image%2020250530153645.png)
+![\1](/Attachments/Pasted%20image%2020250530153645.png)
 
-![\1](Attachments/Pasted%20image%2020250530153618.png)
+![\1](/Attachments/Pasted%20image%2020250530153618.png)
 
 >Vamos a intentar romper el hash con John:
 
-![\1](Attachments/Pasted%20image%2020250530153028.png)
+![\1](/Attachments/Pasted%20image%2020250530153028.png)
 _John reconoce el algoritmo de cifrado que le pasamos con la flag "--format=", así, va cifrando posibles contraseñas (que hay en el diccionario rockyou que le pasamos con la flag "--wordlist=") y comparando los hashes que generan con el real en busca de coincidencia.
 
 >Así que bien, solo nos queda iniciar como usuario root:
 
-![\1](Attachments/Pasted%20image%2020250530154439.png)
+![\1](/Attachments/Pasted%20image%2020250530154439.png)
 
 >Y la maquina es nuestra :3

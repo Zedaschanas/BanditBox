@@ -3,23 +3,23 @@
 
 >Hoy haremos una maquina sencillita, creada por el pinguino de Mario :3
 
-![\1](Attachments/Pasted%20image%2020250522164537.png)
+![\1](/Attachments/Pasted%20image%2020250522164537.png)
 
 >Bien, al menos hasta la fecha de creación de este tutorial, la maquina no es funcional al iniciarla con el script de bash "auto_deploy.sh". Parece que la maquina inicia con una cantidad de descriptores de archivo insuficientes, por eso se cierra con un error:
 
-![\1](Attachments/Pasted%20image%2020250522165634.png)
+![\1](/Attachments/Pasted%20image%2020250522165634.png)
 
 >Y aunque nos aparezca en funcionamiento:
 
-![\1](Attachments/Pasted%20image%2020250522165746.png)
+![\1](/Attachments/Pasted%20image%2020250522165746.png)
 
 >No es funcional:
 
-![\1](Attachments/Pasted%20image%2020250522165820.png)
+![\1](/Attachments/Pasted%20image%2020250522165820.png)
 
 >Después de exprimir un buen rato la IA, descubrimos la cantidad de descriptores de archivo necesaria:
 
-![\1](Attachments/Pasted%20image%2020250522165947.png)
+![\1](/Attachments/Pasted%20image%2020250522165947.png)
 
 >Así que, ejecutaremos el comando para modificar la cantidad de descriptores de archivo en la terminal luego de iniciar la maquina, para que se inicie bien:
 
@@ -32,11 +32,11 @@ sudo docker run -d --ulimit nofile=32768:65536 hiddencat
 4. _nofile=32768:65536 Especifica el numero por defecto (32768) y el numero máximo (65536) de descriptores de archivo
 5. _Por ultimo hiddencat es la imagen a la que le aplicaremos los cambios
 
-![\1](Attachments/Pasted%20image%2020250522171833.png)
+![\1](/Attachments/Pasted%20image%2020250522171833.png)
 
 >Ahora si, vamos a hacer un ping a la maquina para probar conexión:
 
-![\1](Attachments/Pasted%20image%2020250522171923.png)
+![\1](/Attachments/Pasted%20image%2020250522171923.png)
 _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message Protocol” tipo (Echo Request) a la ip victima, esta misma, al estar en funcionamiento, revisa las cabeceras del paquete para determinar que es para ella, y responde con un (Echo Reply).)
 
 1. _Podemos ver el orden de estas tramas ICMP en el apartado “icmp_seq=”,
@@ -45,7 +45,7 @@ _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message P
 
 >Ya que sabemos que tenemos conexión con la maquina, escanearemos puertos, en búsqueda de servicios y sus versiones:
 
-![\1](Attachments/Pasted%20image%2020250524010331.png)
+![\1](/Attachments/Pasted%20image%2020250524010331.png)
 1. _-- min-rate 5000 (quiero tramitar mínimo 5000 paquetes por segundo) esto para que el escaneo vaya con bastante agilidad._
 2. _-n (no deseo que nmap haga una resolución DNS automática)
 3. _-p- (quiero escanear los 65535 puertos del sistema, no los 1000 más comunes, como normalmente hace nmap)._
@@ -56,7 +56,7 @@ _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message P
 
 >Bien, el servicio Apache Tomcat que esta en el puerto 8080 es un servidor web que corre tecnologías de Java (Es como Apache HTTPD o Nginx pero para webs en Java):
 
-![\1](Attachments/Pasted%20image%2020250524011049.png)
+![\1](/Attachments/Pasted%20image%2020250524011049.png)
 _El servicio Tomcat, corre por defecto por el puerto 8080 con Apache, en la imagen vemos que la web nos muestra la pagina por defecto del servicio._
 
 >Ahora bien, Cuando Tomcat se ejecuta con Apache, se necesita un procesamiento de datos desde Apache hasta el mismo Tomcat, para ello existe el puerto 8009. 
@@ -65,7 +65,7 @@ _El servicio Tomcat, corre por defecto por el puerto 8080 con Apache, en la imag
 
 >Buscando un poco en la web, nos encontramos con información sobre la vulnerabilidad:
 
-![\1](Attachments/Pasted%20image%2020250524014118.png)
+![\1](/Attachments/Pasted%20image%2020250524014118.png)
 
 >Resulta que si el puerto 8009 esta expuesto, podemos falsificar peticiones AJP en binario con código malicioso, enviarlas al puerto 8009, y este mismo responderá con el archivo que le pidamos del servicio Tomcat. Esta vulnerabilidad se llama Ghostcat y es muy conocida.
 >En esta explotación se abusa de las variables "javax.servlet.include*" propias de AJP para obtener contenido de archivos que por lo general, no tenemos permitido ver desde la web. Si deseas entender la vulnerabilidad a fondo te recomiendo [esta](https://www.blackduck.com/blog/ghostcat-vulnerability-cve-2020-1938.html) lectura.
@@ -148,16 +148,16 @@ send_forward_request(HOST, PORT, TARGET_FILE)
 >Debemos tener en cuenta que esta vulnerabilidad nos permite leer archivos para los que no tenemos permiso dentro del mismo servicio de Tomcat, pero no es un LFI común donde podemos ver archivos del servidor.
 >Es necesario buscar archivos que tengan información sensible como /manager/html, /tomcat-users.xml o /WEB-INF/web.xml.
 
-![\1](Attachments/Pasted%20image%2020250524025516.png)
+![\1](/Attachments/Pasted%20image%2020250524025516.png)
 _El exploit nos muestra el contenido de /WEB-INF/web.xml por defecto, archivo que contiene información critica sobre la estructura de la web _
 
 >Y funciona :3, podemos leer un archivo al que no tenemos acceso desde la web:
 
-![\1](Attachments/Pasted%20image%2020250524030003.png)
+![\1](/Attachments/Pasted%20image%2020250524030003.png)
 
 >Así que, como pudimos ver, el archivo anterior nos da un nombre de usuario "Jerry", podríamos buscar su contraseña mediante fuerza bruta para el servicio ssh que también esta abierto en esta maquina:
 
-![\1](Attachments/Pasted%20image%2020250524162214.png)
+![\1](/Attachments/Pasted%20image%2020250524162214.png)
 1. _-l (este parámetro se usa para determinar el usuario que ya tenemos, si no tenemos un usuario, al colocar “-L” podemos incluir una wordlist para atacarlos también)_
 2. _-P (para determinar, una wordlist con posibles contraseñas, si tuviéramos una contraseña y quisiéramos probar usuarios, en este punto colocamos “-p” y la contraseña)_
 3. _ssh:// (para determinar el servicio a atacar)
@@ -165,7 +165,7 @@ _El exploit nos muestra el contenido de /WEB-INF/web.xml por defecto, archivo qu
 
 >Encontramos con facilidad la contraseña para el usuario Jerry, procedemos a ingresar por ssh:
 
-![\1](Attachments/Pasted%20image%2020250524162337.png)
+![\1](/Attachments/Pasted%20image%2020250524162337.png)
 
 >Lo primero que haremos al ingresar por ssh es un tratamiento de la terminal, pera tener una Shell completamente interactiva, que no nos de problemas al ejecutar cualquier cosa:
 
@@ -195,7 +195,7 @@ Sí TERM está mal establecido en la máquina, cosas como clear, nano, vim, less
 
 >Para escalar privilegios, listaremos archivos que tengan el permiso SUID (Que se ejecutan como su propietario SIEMPRE), si encontramos un archivo cuyo propietario sea ROOT con el bit SUID activo, podremos ejecutarlo de manera privilegiada:
 
-![\1](Attachments/Pasted%20image%2020250524163137.png)
+![\1](/Attachments/Pasted%20image%2020250524163137.png)
 1. _find (comando de búsqueda en Linux)
 2. _/ (búsqueda desde la raíz del sistema)
 3. _-perm -4000 (De esta manera buscamos archivos que tengan solamente el Bit 4000 o SUID activo)
@@ -205,15 +205,15 @@ Sí TERM está mal establecido en la máquina, cosas como clear, nano, vim, less
 >En la anterior respuesta nos encontramos con una mina de oro. Podemos ejecutar "/usr/bin/perl" y "/usr/bin/python3.7" como ROOT.
 >Cualquiera de los 2 anteriores son binarios con la capacidad de darnos una Shell interactiva, como ambos tienen el Bit SUID activo, SIEMPRE se ejecutan con el contexto del usuario propietario (ROOT), y si abrimos una terminal desde alguno de estos binarios, será una terminal de ROOT y no de Jerry, o eso dice [GTFOBins](https://gtfobins.github.io/):
 
-![\1](Attachments/Pasted%20image%2020250524164016.png)
+![\1](/Attachments/Pasted%20image%2020250524164016.png)
 
 >O
 
-![\1](Attachments/Pasted%20image%2020250524164112.png)
+![\1](/Attachments/Pasted%20image%2020250524164112.png)
 
 >Vamos con Python, que siempre es un poco mas funcional:
 
-![\1](Attachments/Pasted%20image%2020250524164753.png)
+![\1](/Attachments/Pasted%20image%2020250524164753.png)
 _Importamos el modulo "os", luego usamos execl para ejecutar un comando (/bin/bash) con las flags bash y -p (Para mantener los privilegios root)_
 
 >Y la maquina es nuestra :3

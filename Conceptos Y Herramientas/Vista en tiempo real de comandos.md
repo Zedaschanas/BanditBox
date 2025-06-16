@@ -4,12 +4,12 @@
 >Lo siguiente es una manera bastante sencilla y útil para observar el comportamiento de un comando ejecutado en tiempo real.
 >En el ejemplo, somos el usuario "SAMARA", y vemos al listar procesos, que root ejecuto un archivo "echo.sh". Para verificar si fue una ejecución momentánea, o una tarea cíclica, usamos watch:
 
-![\1](Attachments/Pasted%20image%2020250601174900.png)
+![\1](/Attachments/Pasted%20image%2020250601174900.png)
 1. _watch es una utilidad en Linux que nos permite ejecutar repetidamente un comando en intervalos de tiempo, puedes verlo como un bucle por tiempo de un comando_
 2. _-n 1 es la flag que nos permite determinar el intervalo de actualización del comando, en este caso, deseamos que cada segundo se ejecute nuevamente.
 3. _"ps aux | grep echo.sh" es el comando que deseamos ejecutar de manera cíclica (En este caso agregamos "grep echo.sh" para filtrar solamente por el proceso de nuestro interés) _
 
-![\1](Attachments/Pasted%20image%2020250601174914.png)
+![\1](/Attachments/Pasted%20image%2020250601174914.png)
 _Vemos que el proceso de root aparece y desaparece, lo que quiere decir que se esta lanzando a intervalos_.
 
 >Lo anterior nos permitió escalar privilegios en una maquina, también nos hubiera servido "Top" o "Htop", pero, watch es mucho mas funcional. Podemos también:
@@ -48,6 +48,6 @@ watch -n 1 'lsof -p $(pgrep python)'
 2. _El stdout del anterior comando (Que nos da los PIDs de los procesos de Python) se lo pasamos como argumento al comando "lsof -p", que con ello, lista los archivos abiertos por el proceso.
 3. Por ultimo todo lo ejecutamos en bucles de 1 segundo con "Watch"_
 
-![\1](Attachments/Pasted%20image%2020250613030039.png)
+![\1](/Attachments/Pasted%20image%2020250613030039.png)
 
-![\1](Attachments/Pasted%20image%2020250613030058.png)
+![\1](/Attachments/Pasted%20image%2020250613030058.png)

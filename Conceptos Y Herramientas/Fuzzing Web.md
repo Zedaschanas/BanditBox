@@ -4,7 +4,7 @@
 >El objetivo principal al hacer Fuzzing Web es encontrar rutas, archivos o parámetros en aplicaciones web, enviando peticiones masivas (Como una fuerza bruta) con cadenas o "Payloads" ya definidos en diccionarios.
 >Se trata de analizar las respuestas que arroja un servidor sobre cada payload enviado, en búsqueda de cambios en el tamaño, código o contenido de la pagina web. Detectando así recursos o funciones que no deberían ser accesibles.
 
-![Where Is My Web Shell](Attachments/Where%20Is%20My%20Web%20Shell%207.png)
+![Where Is My Web Shell](/Attachments/Where%20Is%20My%20Web%20Shell%207.png)
 Hay muchas herramientas para enumerar directorios; [Dirb]([https://www.kali.org/tools/dirb/](https://www.kali.org/tools/dirb/) ), [Gobuster]([https://github.com/OJ/gobuster](https://github.com/OJ/gobuster) ), [Wfuzz]([https://www.kali.org/tools/wfuzz/](https://www.kali.org/tools/wfuzz/) ), Pero tal vez la más eficiente es [ffuf]([https://github.com/ffuf/ffuf](https://github.com/ffuf/ffuf) ), así que para usarla:
 
 1. _-c Para que se vea bonito con colorcitos_ ╰(*°▽°*)╯
@@ -15,7 +15,7 @@ Hay muchas herramientas para enumerar directorios; [Dirb]([https://www.kali.org/
 
 >O si deseas usar Wfuzz:
 
-![Trust](Attachments/Trust%206.png)
+![Trust](/Attachments/Trust%206.png)
 
 1. _-c (Para que los códigos de estado en la respuesta tengan colorcitos)_ O.O
 2. _-w (Para indicar la Wordlist o lista de palabras con la que Wfuzz aplicara fuerza Bruta, el Wordlist que usamos es de [Seclist](https://github.com/danielmiessler/SecLists_](https://github.com/danielmiessler/SecLists))

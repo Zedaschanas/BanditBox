@@ -2,19 +2,19 @@
 -------------
 >Hoy tenemos la máquina Injection, de Dificultad muy fácil, muy muy fácil…
 
-![Ingection](Attachments/Ingection.png)
+![Ingection](/Attachments/Ingection.png)
 
 >Así que bien, como siempre, empezamos descomprimiendo el archivo zip que descargamos de Docker Labs:[https://dockerlabs.es](https://dockerlabs.es)
 
-![Ingection](Attachments/Ingection%201.png)
+![Ingection](/Attachments/Ingection%201.png)
 
 >Una vez en uso, haremos un escaneo general (a modo de traza), a la interfaz de red Docker0, donde encontramos la IP Victima :3
 
-![Ingection](Attachments/Ingection%202.png)
+![Ingection](/Attachments/Ingection%202.png)
 
 >Procedemos con un escaneo relativamente completo con nmap
 
-![Ingection](Attachments/Ingection%203.png)
+![Ingection](/Attachments/Ingection%203.png)
 1. _-- min-rate 4000 (Quiero tramitar mínimo 4000 paquetes por segundo) esto para que el escaneo vaya con bastante agilidad._
 2. _-n (No deseo que nmap haga una resolución DNS automática)
 3. _-p- (Quiero escanear los 65535 puertos del sistema, no los 1000 más comunes, como normalmente hace nmap)._
@@ -22,15 +22,15 @@ _El segundo escaneo, hecho al encontrar los puertos abiertos de la máquina, se 
 
 >Ahora bien, los scripts de nmap no nos dan mucha información, y al hacer una exploración bastante simple de las posibles vulnerabilidades de los servicios corriendo tampoco encontramos mucho. Así que, empezando por el puerto 80, haremos una exploración del servidor apache, donde encontramos un panel de login.
 
-![Ingection](Attachments/Ingection%204.png)
+![Ingection](/Attachments/Ingection%204.png)
 
 >Antes de probar los usuarios y contraseñas más comunes, revisar el código fuente, o tal vez fuerza bruta. testeamos con una comilla si la base de datos tras el panel de login puede ser vulnerable a un SQLI.
 
-![Ingection](Attachments/Ingection%205.png)
+![Ingection](/Attachments/Ingection%205.png)
 
 >Nos encontramos con que si, lo mas probable es que si. Lo usual al ver un error así de vistoso, es testear lo que sucede al cambiar la lógica de la consulta, con un payload muy conocido:
 
-![Ingection](Attachments/Ingection%206.png)
+![Ingection](/Attachments/Ingection%206.png)
 _Bien, desglosando un poco lo sucedido: ‘ or 1=1- - -_
 
 _Al ingresar en un panel de login, por lo general, la consulta que se realiza por detrás a una base de datos SQL se ve algo así:_
@@ -57,11 +57,11 @@ _Para entenderlo del todo, te recomiendo ir a la biblia del Hacking, donde lo en
 
 >Una vez explotado el SQL, vemos que el servidor nos devuelve un usuario y una contraseña.
 
-![Ingection](Attachments/Ingection%207.png)
+![Ingection](/Attachments/Ingection%207.png)
 
 >Guiándonos por la corazonada de que reutilizan las contraseñas y usuarios de los servicios de la máquina, probamos con ssh.
 
-![Ingection](Attachments/Ingection%208.png)
+![Ingection](/Attachments/Ingection%208.png)
 
 >Y efectivamente entramos a la máquina por ssh utilizando el usuario y la contraseña, si quieres saber un poco más sobre ssh aquí te dejo un versículo de la biblia:[https://book.hacktricks.wiki/es/network-services-pentesting/pentesting-ssh.html](https://book.hacktricks.wiki/es/network-services-pentesting/pentesting-ssh.html)
 
@@ -69,7 +69,7 @@ _Para entenderlo del todo, te recomiendo ir a la biblia del Hacking, donde lo en
 
 >Nuestro primer paso para escalar privilegios será buscar archivos con el bit SUID (en síntesis, archivos que podemos ejecutar con privilegios del propietario ROOT)
 
-![Ingection](Attachments/Ingection%209.png)
+![Ingection](/Attachments/Ingection%209.png)
 1. Con el comando “find” Buscamos archivos
 2. Con “/” especificamos que sea desde el directorio raiz 
 3. “-perm -4000” para especificar que queremos listar solamente archivos con el bit SUID
@@ -81,11 +81,11 @@ _Para entenderlo del todo, te recomiendo ir a la biblia del Hacking, donde lo en
 
 >Este archivo con el bit SUID nos permite ejecutar otros archivos de la máquina con los permisos de ROOT, así que con abrir una terminal bash desde este archivo sería suficiente para ser usuario root
 
-![Ingection](Attachments/Ingection%2010.png)
+![Ingection](/Attachments/Ingection%2010.png)
 
 >Tristemente, parece que no podemos usar sudo, en esta maquina, así que probamos de otra manera
 
-![Ingection](Attachments/Ingection%2011.png)
+![Ingection](/Attachments/Ingection%2011.png)
 
 >Con el archivo /usr/bin/env ejecutamos /bin/sh (una Shell interactiva) y con el parámetro -p evitamos que /bin/sh ignore el bit SUID, es decir, lo obligamos a darnos una consola como ROOT. la máquina es nuestra :3
 

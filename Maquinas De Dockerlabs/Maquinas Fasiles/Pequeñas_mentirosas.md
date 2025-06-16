@@ -3,15 +3,15 @@
 ------------
 >Bien, hoy vamos con una maquinita de dificultad fácil para pulir habilidades...
 
-![Pequeñas_mentirosas](Attachments/Pequeñas_mentirosas.png)
+![Pequeñas_mentirosas](/Attachments/Pequeñas_mentirosas.png)
 
 >Primero, levantamos la máquina, descomprimiendo el “.zip” y ejecutando el script de automatización:
 
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%201.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%201.png)
 
 >Verificamos la conexión con la dirección ip a vulnerar con unas tramas ICMP:
 
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%202.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%202.png)
 _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message Protocol” tipo (Echo Request) a la ip victima, esta misma, al estar en funcionamiento, verifica las cabeceras del paquete para determinar que es para ella, y responde con un (Echo Reply).)_
 
 1. _Podemos ver el orden de estas tramas ICMP en el apartado “icmp_seq=”,_
@@ -20,7 +20,7 @@ _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message P
 
 >Una vez verificamos conexión con la máquina, realizamos una escaneo fuerte con nmap para enumerar puertos abiertos y servicios:
 
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%203.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%203.png)
 1. _-- min-rate 5000 (quiero tramitar mínimo 5000 paquetes por segundo) esto para que el escaneo vaya con bastante agilidad._
 2. _-n (no deseo que nmap haga una resolución DNS automática)
 3. _-p- (quiero escanear los 65535 puertos del sistema, no los 1000 más comunes, como normalmente hace nmap)._
@@ -31,16 +31,16 @@ _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message P
 
 >Terminamos con el reconocimiento haciendo una pequeña enumeración a las tecnologías que corren en el servidor web, escaneo que no nos da mucha info :(
 
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%204.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%204.png)
 
 >Así que, vamos a ver el servidor web…
 
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%205.png)
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%206.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%205.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%206.png)
 
 >Una pequeña y muy bien escondida pista nos da un posible nombre de usuario “a”. En realidad después de enumerar directorios no encontramos nada más en el servicio web, así que, pasamos a la fuerza bruta:
 
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%207.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%207.png)
 1. _-l (este parámetro se usa para determinar el usuario que ya tenemos. Si no hubiéramos tenido un usuario, al colocar “-L” podemos incluir una Wordlist para atacarlos también)_
 2. _-P (para determinar, una Wordlist con posibles contraseñas, si tuviéramos una contraseña y quisiéramos probar usuarios, en este punto colocamos “-p” y la contraseña)_
 3. _ssh:// (para determinar el servicio a atacar, puede ser http// o ftp:// )
@@ -48,36 +48,36 @@ _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message P
 
 >No nos toma mucho tiempo descubrir la contraseña. Intentamos ingresar por ssh con las nuevas credenciales:
 
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%208.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%208.png)
 
 >Primero le indicamos a la Shell que la variable de entorno TERM debe establecerse en xterm:
 
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%209.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%209.png)
 _Aquí, le estamos diciendo a la shell que deseamos que la variable de entorno (responsable de especificar el tipo de terminal usado) TERM, sea igual a Xterm._
 _Sí TERM no se establece o está mal establecido en la máquina, cosas como clear, nano, vim, less, no funcionan correctamente (Es para tener una experiencia un poco más funcional)._
 
 >Luego de esto, intentamos listar privilegios del usuario:
 
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%2010.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%2010.png)
 _Ejecutamos el binario setuid (que siempre se ejecuta como root)“SUDO”, con la flag “-l”. El binario busca los privilegios que el usuario actual tiene descritos en el archivo /etc/sudoers y los muestra por pantalla (Si aplica)._
 
 >Tristemente, no podemos listar privilegios como usuario “a”, pero, buscando un poco más, encontramos al usuario “Spencer”
 
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%2011.png)
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%2012.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%2011.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%2012.png)
 
 >Al no ver otra manera de escalada de privilegios, realizamos otra fuerza bruta, pero ahora para el usuario “Spencer”
 
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%2013.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%2013.png)
 
 >Encontramos su super contraseña, así que cambiamos de usuario para ver si este otro si cuenta con privilegios de ejecución de algún archivo:
 
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%2014.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%2014.png)
 _Se ejecuta “su” para realizar un cambio de identidad, “su” llama a una función del sistema (setuid) para cambiar el UserID y el GroupID al del usuario de destino, para finalmente lanzar una nueva shell como el usuario spencer._
 
 >Ahora que somos “Spencer” podemos intentar listar privilegios nuevamente:
 
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%2015.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%2015.png)
 1. _(ALL) Permite ejecutar el binario como CUALQUIER usuario, incluido claro, el mas privilegiado_
 2. _NOPASSWD Nos indica que no es necesario ingresar contraseña para ejecutar el binario_
 3. _/usr/bin/python3 Binario sobre el que tenemos privilegios (cuya ruta está definida arriba en “secure_path”)_
@@ -88,10 +88,10 @@ _Se ejecuta “su” para realizar un cambio de identidad, “su” llama a una 
 
 >Así bien:
 
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%2016.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%2016.png)
 _Ejecutamos el binario “sudo” con la flag “-u” para indicar el usuario con el cual queremos ejecutar el comando, de allí nos abrimos el intérprete de Python; Importando la librería “os”(import os), abrimos un proceso hijo, y en este mismo se ejecuta una bash con el contexto de root (os.system(“bin/bash”))_
 
-![Pequeñas_mentirosas](Attachments/Peque%C3%B1as_mentirosas%2017.png)
+![Pequeñas_mentirosas](/Attachments/Peque%C3%B1as_mentirosas%2017.png)
 
 >Y la maquinita es nuestra :)
 

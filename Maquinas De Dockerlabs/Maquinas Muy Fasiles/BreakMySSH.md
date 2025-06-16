@@ -6,11 +6,11 @@
 
 >Empezamos por lo normal, levantando la máquina:
 
-![BreakMySSH](Attachments/BreakMySSH.png)
+![BreakMySSH](/Attachments/BreakMySSH.png)
 
 >Vamos a hacer un escaneo fuerte con nmap, sin tener en cuenta la detección, ya que estamos en un entorno controlado:
 
-![BreakMySSH](Attachments/BreakMySSH%201.png)
+![BreakMySSH](/Attachments/BreakMySSH%201.png)
 1. _-- min-rate 5000 (quiero tramitar mínimo 5000 paquetes por segundo) esto para que el escaneo vaya con bastante agilidad._
 2. _-n (no deseo que nmap haga una resolución DNS automática)
 3. _-p- (quiero escanear los 65535 puertos del sistema, no los 1000 más comunes, como normalmente hace nmap)._
@@ -21,7 +21,7 @@
 
 >Particularmente,  encontramos las credenciales del usuario root, así de fácil:
 
-![BreakMySSH](Attachments/BreakMySSH%202.png)
+![BreakMySSH](/Attachments/BreakMySSH%202.png)
 
 >Claro que lo mismo hubiéramos logrado con una fuerza bruta mucho más potente con hydra
 
@@ -29,12 +29,12 @@
 
 >Buscamos en Searchsploit posibles vulnerabilidades conocidas, ya que en el escaneo nmap se noto que la versión de SSH (OpenSSH 7.7) esta bastante desactualizada.
 
-![BreakMySSH](Attachments/BreakMySSH%203.png)
+![BreakMySSH](/Attachments/BreakMySSH%203.png)
 _Searchsploit es una herramienta de terminal que filtra y busca entre todos los exploits que se encuentran en ExploitDB [[https://www.exploit-db.com/]]_. _En el paquete preinstalado en kali "exploitdb" existe un archivo files_exploits.csv en donde se encuentran los metadatos de TODOS los exploits.
-![\1](Attachments/Pasted%20image%2020250504142751.png)
+![\1](/Attachments/Pasted%20image%2020250504142751.png)
 La herramienta Searchsploit filtra por todos ellos buscando coincidencias por sistema operativo, descripción o nombre del servicio, hasta encontrar una coincidencia para una vulnerabilidad que estemos buscando.
 Con el parámetro -m (mirror) creamos una copia en el directorio de trabajo actual del exploit que deseamos. Searchsploit copia este archivo desde una ruta en particular del sistema en la que se almacenan los exploits del paquete "ExploitDB" 
-![\1](Attachments/Pasted%20image%2020250504143519.png)
+![\1](/Attachments/Pasted%20image%2020250504143519.png)
 
 
 >Encontramos varios exploits que permiten enumerar usuarios de ssh, procedemos a descargar uno de ellos con el comando --mirror o -m.
@@ -76,11 +76,11 @@ pip2 install paramiko==2.4.2
 
 >_Puedes ingresar este “type=int” para que el puerto sea tratado como un entero, y no como un string, ya que eso te puede dar problemas._
 
-![BreakMySSH](Attachments/BreakMySSH%204.png)
+![BreakMySSH](/Attachments/BreakMySSH%204.png)
 
 >Ahora si :3
 
-_![BreakMySSH](Attachments/BreakMySSH%205.png)_
+_![BreakMySSH](/Attachments/BreakMySSH%205.png)_
 
 >Finalmente, tenemos una manera de enumerar usuarios. Aunque podemos enumerar usuarios escribiéndolos de manera manual, aquí hay un pequeño script de bash que te puede ayudar en el proceso (de ser posible, te sugiero crear el tuyo propio)
 
@@ -109,13 +109,13 @@ wait
 
 >Puedes usarlo de la siguiente manera:
 
-![BreakMySSH](Attachments/BreakMySSH%206.png)
+![BreakMySSH](/Attachments/BreakMySSH%206.png)
 _Para que funcione bien debes tener un diccionario de posibles usuarios en un archivo llamado “user” en la misma carpeta, y debes darle permisos de ejecución al script.
 
 >Ya una vez tenemos los usuarios, podemos hacer fuerza bruta con cada uno de ellos, así encontramos la contraseña para 2 de ellos:
 
-![BreakMySSH](Attachments/BreakMySSH%207.png)
-![BreakMySSH](Attachments/BreakMySSH%208.png)
+![BreakMySSH](/Attachments/BreakMySSH%207.png)
+![BreakMySSH](/Attachments/BreakMySSH%208.png)
 1. _-l (este parámetro se usa determinar el usuario que ya tenemos, si no tenemos un usuario, al colocar “-L” podemos incluir una wordlist para atacarlos también)_
 2. _-P (para determinar, una wordlist con posibles contraseñas, si tuviéramos una contraseña y quisiéramos probar usuarios, en este punto colocamos “-p” y la contraseña)_
 3. _ssh:// (para determinar el servicio a atacar, puede ser http// o ftp://, en este caso ssh://)_
@@ -123,7 +123,7 @@ _Para que funcione bien debes tener un diccionario de posibles usuarios en un ar
 
 >Como ingresar como root no sería divertido, vamos a ingresar como usuario Lovely
 
-![BreakMySSH](Attachments/BreakMySSH%209.png)
+![BreakMySSH](/Attachments/BreakMySSH%209.png)
 
 >_Si te aparece este mismo error, es porque es servidor ssh entro en pánico, para solucionarlo solo sigues la instrucción._
 
@@ -131,11 +131,11 @@ _Para que funcione bien debes tener un diccionario de posibles usuarios en un ar
 ssh-keygen -f "/home/bandit0/.ssh/known_hosts" -R "172.17.0.2"
 ```
 
-_![BreakMySSH](Attachments/BreakMySSH%2010.png)_
+_![BreakMySSH](/Attachments/BreakMySSH%2010.png)_
 
 >Hoy para escalar privilegios listamos archivos ocultos de sistema
 
-![BreakMySSH](Attachments/BreakMySSH%2011.png)
+![BreakMySSH](/Attachments/BreakMySSH%2011.png)
 1. _find (comando de búsqueda en Linux)
 2. _/ (búsqueda desde la raíz del sistema)
 3. _-name (buscar por nombre)
@@ -146,11 +146,11 @@ _![BreakMySSH](Attachments/BreakMySSH%2010.png)_
 
 >Así me encuentro con un hash oculto a simple vista
 
-![BreakMySSH](Attachments/BreakMySSH%2012.png)
+![BreakMySSH](/Attachments/BreakMySSH%2012.png)
 
 >Tiene 33 caracteres caracteres hexadecimales así que puede ser un hash de tipo MD5, al usar herramientas como "hash-identifier" o "hashid" no nos dicen mucho. Así que intentamos crackearlo un poco a ciegas como MD5:
 
-![BreakMySSH](Attachments/BreakMySSH%2013.png)
+![BreakMySSH](/Attachments/BreakMySSH%2013.png)
 1. _hashcat (herramienta para romper hashes)
 2. _-m 0 (indica que el hash es MD5)
 3. _-a 0 (ataque de diccionario)
@@ -159,6 +159,6 @@ _![BreakMySSH](Attachments/BreakMySSH%2010.png)_
 
 >Una vez encontrada la contraseña, ya podemos escalar privilegios con total tranquilidad :3
 
-![BreakMySSH](Attachments/BreakMySSH%2014.png)
+![BreakMySSH](/Attachments/BreakMySSH%2014.png)
 
 O.O   //El comando "rm -rf /*" ejecutado como administrador borra todos los archivos del sistema, es un pequeño guiño al ganar acceso como root a una máquina, NO LO EJECUTES//   O.O

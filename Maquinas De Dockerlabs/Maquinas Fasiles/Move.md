@@ -2,15 +2,15 @@
 ---------------
 >Hoy tenemos una maquinita fácil por hacer, no ayudara con conceptos de LFI, vamos vamos  :3
 
-![\1](Attachments/Pasted%20image%2020250519030415.png)
+![\1](/Attachments/Pasted%20image%2020250519030415.png)
 
 >Primero, levantamos la máquina, descomprimiendo el “.zip” y ejecutando el script de automatización:
 
-![\1](Attachments/Pasted%20image%2020250519030508.png)
+![\1](/Attachments/Pasted%20image%2020250519030508.png)
 
 >Vamos a enviar unas cuantas trazas ICMP con el comando Ping para verificar nuestra conexión con la maquina:
 
-![\1](Attachments/Pasted%20image%2020250519030621.png)
+![\1](/Attachments/Pasted%20image%2020250519030621.png)
 _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message Protocol” tipo (Echo Request) a la ip victima, esta misma, al estar en funcionamiento, revisa las cabeceras del paquete para determinar que es para ella, y responde con un (Echo Reply).)
 
 1. _Podemos ver el orden de estas tramas ICMP en el apartado “icmp_seq=”,
@@ -19,7 +19,7 @@ _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message P
 
 >Vamos a escanear los puertos abiertos de la maquina, para ello usaremos nmap, con algunas flags especificas:
 
-![\1](Attachments/Pasted%20image%2020250519030950.png)
+![\1](/Attachments/Pasted%20image%2020250519030950.png)
 1. _-- min-rate 5000 (quiero tramitar mínimo 5000 paquetes por segundo) esto para que el escaneo vaya con bastante agilidad._
 2. _-n (no deseo que nmap haga una resolución DNS automática)
 3. _-p- (quiero escanear los 65535 puertos del sistema, no los 1000 más comunes, como normalmente hace nmap)._
@@ -32,36 +32,36 @@ _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message P
 
 >Para conectarnos usaremos el cliente de terminal "ftp", escribimos el usuario Anonymous y no proporcionamos contraseña:
 
-![\1](Attachments/Pasted%20image%2020250519032256.png)
+![\1](/Attachments/Pasted%20image%2020250519032256.png)
 
 >Listaremos el contenido compartido que hay en el servicio:
 
-![\1](Attachments/Pasted%20image%2020250519032420.png)
+![\1](/Attachments/Pasted%20image%2020250519032420.png)
 _Con el comando dir o ls puedes listar contenidos compartidos y sus permisos en ftp_
 
 >Encontramos un solo directorio sobre el cual tenemos permisos de lectura y ejecución, ingresamos al directorio y listamos su contenido:
 
-![\1](Attachments/Pasted%20image%2020250519032858.png)
+![\1](/Attachments/Pasted%20image%2020250519032858.png)
 _Con el comando cd, igual que en un terminal Linux puedes pasar de un directorio a otro en ftp_
 
 >Para leer el archivo database.kdbx lo traeremos a nuestra maquina para examinarlo con facilidad:
 
-![\1](Attachments/Pasted%20image%2020250519033136.png)
+![\1](/Attachments/Pasted%20image%2020250519033136.png)
 
 >Bien, Por la extensión, sabemos que es un archivo de base de datos KeePass, en si, un gestor de contraseñas. Por lo general, están cifrados (Con un cifrado fuerte como AES-256):
 
-![\1](Attachments/Pasted%20image%2020250519034937.png)
+![\1](/Attachments/Pasted%20image%2020250519034937.png)
 _Usamos el cliente de terminal de la herramienta "Keepassxc" con el parámetro "open" para intentar abrir el archivo _
 
 >Y vemos que este claro que esta cifrado. Aunque por lo general se pueden intentar crackear con keepass2john y John The Ripper, muy a nuestro pesar, keepass2john no es compatible para archivos de versión 4 de KeePass. Así que por ahora, seguimos en búsqueda de otros vectores.
 >Vamos a ver la web principal en el puerto 80:
 
-![\1](Attachments/Pasted%20image%2020250519035826.png)
+![\1](/Attachments/Pasted%20image%2020250519035826.png)
 
 >Al ser una pagina por defecto de apache no nos sirve de mucho, así que vamos a Fuzzear.
 >Hay muchas herramientas para enumerar directorios; [Dirb]([https://www.kali.org/tools/dirb/](https://www.kali.org/tools/dirb/) ), [Gobuster]([https://github.com/OJ/gobuster](https://github.com/OJ/gobuster) ), [Wfuzz]([https://www.kali.org/tools/wfuzz/](https://www.kali.org/tools/wfuzz/) ), Pero tal vez la más eficiente es [ffuf]([https://github.com/ffuf/ffuf](https://github.com/ffuf/ffuf) ), así que para usarla:
 
-![\1](Attachments/Pasted%20image%2020250519040015.png)
+![\1](/Attachments/Pasted%20image%2020250519040015.png)
 1. _-c Para que se vea bonito con colorcitos_ ╰(*°▽°*)╯
 2. _-w Para especificar el diccionario que se probará en la url (uso un diccionario de [Seclists](https://github.com/danielmiessler/SecLists) )_
 3. _-t Para indicarle la cantidad de hilos (tareas múltiples) que deseo para la tarea a realizar, en este caso 200_
@@ -70,69 +70,69 @@ _Usamos el cliente de terminal de la herramienta "Keepassxc" con el parámetro "
 
 >En la respuesta, nos encontramos con un:
 
-![\1](Attachments/Pasted%20image%2020250519040229.png)
+![\1](/Attachments/Pasted%20image%2020250519040229.png)
 
 >Vamos a inspeccionarlo en la web:
 
-![\1](Attachments/Pasted%20image%2020250519040306.png)
+![\1](/Attachments/Pasted%20image%2020250519040306.png)
 
 >Vemos una filtración de información que nos indica un acceso en una ruta del sistema. Probablemente sea algo que nos ayudara mas tarde...
 >Sin mucho mas en el puerto 80, nos vamos al 3000:
 
-![\1](Attachments/Pasted%20image%2020250519040556.png)
+![\1](/Attachments/Pasted%20image%2020250519040556.png)
 
 >Nos encontramos con un servicio Grafana (Se podría decir que es un gestor de monitoreo de datos de código abierto). Podemos notar que en la zona baja se nos indica que hay una nueva versión disponible, lo que sugiere que estamos frente a una versión desactualizada y potencialmente vulnerable.
 >Si en este punto probamos simples contraseñas por defecto (admin:admin), podremos ingresar al panel de administración de Grafana:
 
-![\1](Attachments/Pasted%20image%2020250519041517.png)
+![\1](/Attachments/Pasted%20image%2020250519041517.png)
 
 >En un entorno en donde Grafana si sea funcional, podríamos visualizar todos los usuario del servicio, crear un plugin vulnerable o una Api infectada. Pero, tristemente, el panel prácticamente no tiene ningún uso, y ningún otro usuario, así que volvemos un poco en nuestros pasos y verificamos posibles vulnerabilidades para la versión de Grafana:
 
-![\1](Attachments/Pasted%20image%2020250519041941.png)
+![\1](/Attachments/Pasted%20image%2020250519041941.png)
 _Searchsploit es una herramienta de terminal que filtra y busca entre todos los exploits que se encuentran en ExploitDB [[https://www.exploit-db.com/]]_. _En el paquete preinstalado en kali "exploitdb" existe un archivo files_exploits.csv en donde se encuentran los metadatos de TODOS los exploits.
-![\1](Attachments/Pasted%20image%2020250504142751.png)
+![\1](/Attachments/Pasted%20image%2020250504142751.png)
 La herramienta Searchsploit filtra por todos ellos buscando coincidencias por sistema operativo, descripción o nombre del servicio, hasta encontrar una coincidencia para una vulnerabilidad que estemos buscando.
 
 >Nos encontramos con un exploit para la versión 8.3.0 de Grafana, lo mejor será traerlo a nuestro directorio de trabajo para analizarlo:
 
-![\1](Attachments/Pasted%20image%2020250519042508.png)
+![\1](/Attachments/Pasted%20image%2020250519042508.png)
 Con el parámetro -m (mirror) creamos una copia en el directorio de trabajo actual del exploit que deseamos. Searchsploit copia este archivo desde una ruta en particular del sistema en la que se almacenan los exploits del paquete "ExploitDB" _
-![\1](Attachments/Pasted%20image%2020250504143519.png)
+![\1](/Attachments/Pasted%20image%2020250504143519.png)
 
 >Analizando un poco el código, podemos notar que la explotación es muy sencilla, podemos encontrar varios exploits mas en la web ([Como este](https://ethicalhacking.uk/cve-2021-43798-dissecting-the-grafana-path-traversal-vulnerability/#gsc.tab=0, ),[o este](https://github.com/FAOG99/GrafanaDirectoryScanner), y todos tienen las misma base de explotación:
 
-![\1](Attachments/Pasted%20image%2020250519121549.png)
+![\1](/Attachments/Pasted%20image%2020250519121549.png)
 _Se toman los posibles plugins (existentes en el servicio) de una lista mas arriba, y mediante el bucle while, se van probando uno por uno con la sintaxis "http://URL/Inyección_De_Path_Traversal/Archivo_Que_Deceamos_Leer"_
 
 >Grafana no sanitiza bien en Input de usuario. Al intentar acceder a un recurso publico de un plugin en especial, se usa un método en el código fuente del servicio (filesystem.Open), que nos permite visualizar archivos del plugin con la función "os.open", pero, al no estar bien sanitizado, aplicando un "Directory Path Traversal" podemos salir del directorio esperado de lectura de archivos del plugin y leer archivos sensibles de la maquina (Si deseas mas información sobre la vulnerabilidad [aqui](https://labs.detectify.com/security-guidance/how-i-found-the-grafana-zero-day-path-traversal-exploit-that-gave-me-access-to-your-logs/) te dejo un par de [recursos](https://www.contrastsecurity.com/security-influencers/detecting-a-new-grafana-exploit-in-go)).
 >Todo lo anterior, el la practica, se aplicaría de esta forma:
 
-![\1](Attachments/Pasted%20image%2020250519125739.png)
+![\1](/Attachments/Pasted%20image%2020250519125739.png)
 1. _Curl es una herramienta multiprotocolo diseñada para enviar datos a, o desde un servidor_
 2. _Con el parámetro --Path-as-is le indicamos a Curl que deseamos enviar la petición TAL Y COMO ESTA escrita, ya que esta herramienta por defecto normaliza rutas como ../ que necesitamos para la explotación _
 3. La url vulnerable para Grafana siempre cumple con la misma sintaxis; La dirección ip y el puerto, el directorio /public/ seguido del directorio /plugins/, el directorio del plugin al que podemos acceder (Puede ser alertlist, mysql, loki, el que te sirva), una inyección de Path Traversal para retroceder de directorio, y el archivo que queremos visualizar (http://IP/PUERTO/DIRECTORIOS/Inyección_De_Path_Traversal/Archivo_Que_Deceamos_Leer"_)
 
 >Obtenemos el /etc/passwd de la maquina, tenemos un LFI :3, lo hicimos manualmente con Curl, pero también lo puedes explotar con Burpsuite:
 
-![\1](Attachments/Pasted%20image%2020250519170135.png)
+![\1](/Attachments/Pasted%20image%2020250519170135.png)
 
 >Y hasta con Wget:
 
-![\1](Attachments/Pasted%20image%2020250519170959.png)
+![\1](/Attachments/Pasted%20image%2020250519170959.png)
 _Wget es una herramienta funcional para descargar recursos de una web soportando distintos protocolos y con bastante rapidez. En este caso modificamos el payload codificando en URL el "Path Traversal" para que fuera funcional._
 
 >Bien, ya que tenemos un LFI, vemos que en el archivo /etc/passwd tenemos un usuario freddy, además, tenemos la posibilidad de listar el archivo que encontramos antes en la web "/tmp/pass.txt"
 
-![\1](Attachments/Pasted%20image%2020250519171654.png)
+![\1](/Attachments/Pasted%20image%2020250519171654.png)
 
 >Obtenemos lo que parece ser una contraseña, la podemos probar en el KeePass  O.O
 
-![\1](Attachments/Pasted%20image%2020250519172217.png)
+![\1](/Attachments/Pasted%20image%2020250519172217.png)
 
 >Tristemente, lo único que vemos con KeePass es la contraseña que ya tenemos para el usuario freddy, al menos eso nos dice que es muy probable que la passwd del servicio ssh para freddy es aquella.
 >Así que, ingresamos por ssh:
 
-![\1](Attachments/Pasted%20image%2020250519172611.png)
+![\1](/Attachments/Pasted%20image%2020250519172611.png)
 
 >Antes de proceder con la escalada de privilegios, hacemos un tratamiento de la TTY para mayor eficiencia:
 
@@ -162,7 +162,7 @@ Sí TERM está mal establecido en la máquina, cosas como clear, nano, vim, less
 
 >Ya que tenemos una Shell bastante mejor, listamos privilegios del usuario actual, para determinar si tenemos permisos sobre algún binario en especial:
 
-![\1](Attachments/Pasted%20image%2020250519173232.png)
+![\1](/Attachments/Pasted%20image%2020250519173232.png)
 _Ejecutamos el binario setuid (que siempre se ejecuta como root)“SUDO”, con la flag “-l”. El binario busca los privilegios que el usuario actual tiene descritos en el archivo /etc/sudoers y los muestra por pantalla (Si aplica)_
 1. _(ALL) Permite ejecutar el binario como CUALQUIER usuario, incluido claro, el mas privilegiado_
 2. _NOPASSWD Nos indica que no es necesario ingresar contraseña para ejecutar el binario_
@@ -171,29 +171,29 @@ _Ejecutamos el binario setuid (que siempre se ejecuta como root)“SUDO”, con 
 
 >Así que bien, vamos a echarle un vistazo al script:
 
-![\1](Attachments/Pasted%20image%2020250519174734.png)
+![\1](/Attachments/Pasted%20image%2020250519174734.png)
 _Primero lo ejecutamos con privilegios elevados, para luego con un "cat", listar su contenido_
 
 >Tenemos simplemente un script que imprime por pantalla un texto, pero, si listamos sus privilegios:
 
-![\1](Attachments/Pasted%20image%2020250519173631.png)
+![\1](/Attachments/Pasted%20image%2020250519173631.png)
 _la "w" en la zona izquierda de los permisos hace referencia a writable, y la "r" a readable, en pocas palabras, el dueño del archivo tiene permisos de lectura, y escritura sobre el._
 
-![\1](Attachments/Pasted%20image%2020250519174308.png)
+![\1](/Attachments/Pasted%20image%2020250519174308.png)
 
 
 >Ya sabiendo esto, podemos modificar el script libremente, insertando lo que queramos, y luego ejecutándolo como administrador, esto es critico, y podemos explotarlo muy fácilmente.
 >Primero, con nano abrimos el archivo:
 
-![\1](Attachments/Pasted%20image%2020250519174929.png)
+![\1](/Attachments/Pasted%20image%2020250519174929.png)
 
 >Borramos el código real, e inyectamos nuestra carga maliciosa:
 
-![\1](Attachments/Pasted%20image%2020250519175052.png)
+![\1](/Attachments/Pasted%20image%2020250519175052.png)
 _Importamos la librería os, luego, desde ella, con system ejecutamos una /bin/bash_
 
 >Ya que tenemos el script infectado, podemos ejecutarlo de manera privilegiada, la /bin/bash dentro del código se ejecutara en el contexto de root, por ende, terminaremos con una Shell como el usuario mas privilegiado
 
-![\1](Attachments/Pasted%20image%2020250519173738.png)
+![\1](/Attachments/Pasted%20image%2020250519173738.png)
 
 > Ya tendríamos la maquina ╰(*°▽°*)╯

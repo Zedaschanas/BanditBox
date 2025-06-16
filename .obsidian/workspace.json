@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Conceptos Y Herramientas/CiberChef.md",
+                "file": "Maquinas De Dockerlabs/Maquinas Muy Fasiles/BreakMySSH.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "CiberChef"
+              "title": "BreakMySSH"
             }
           }
         ]
@@ -142,13 +142,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Conceptos Y Herramientas/CiberChef.md",
+                "file": "Maquinas De Dockerlabs/Maquinas Muy Fasiles/BreakMySSH.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Esquema de CiberChef"
+              "title": "Esquema de BreakMySSH"
             }
           }
         ],
@@ -170,15 +170,28 @@
   },
   "active": "0b8ef094b260f1b1",
   "lastOpenFiles": [
+    "Maquinas De Dockerlabs/Maquinas Fasiles/Backend.md",
+    "Maquinas De Dockerlabs/Maquinas Fasiles/Vulnvault.md",
+    "Escalada De Privilegios/Abuso de Binario nano.md",
+    "Conceptos Y Herramientas/Tratamiento De La TTY.md",
+    "Conceptos Y Herramientas/Vista en tiempo real de comandos.md",
+    "Escalada De Privilegios/Abuso De Binario base64.md",
     "Conceptos Y Herramientas/CrackMapExec.md",
+    "Maquinas De Dockerlabs/Maquinas Fasiles/nodeclimb.md",
+    "fiximages2.py",
+    "fiximagess1.txt",
+    "fiximagess.txt",
+    "Nuevo Documento de texto.txt",
+    "Maquinas De Dockerlabs/Maquinas Fasiles/Candy.md",
+    "Conceptos Y Herramientas/CiberChef.md",
+    "fiximages1.py",
+    "fiximages.py.txt",
     "Conceptos Y Herramientas/Fuerza bruta con Hydra.md",
     "Conceptos Y Herramientas/Verificar conexión.md",
     "Conceptos Y Herramientas/Rpcclient.md",
-    "Escalada De Privilegios/Abuso De Binario base64.md",
     "Escalada De Privilegios/Abuso de Binario Env.md",
     "Maquinas De Dockerlabs/Maquinas Muy Fasiles/Injection.md",
     "Escalada De Privilegios/Abuso de Binario Grep.md",
-    "Escalada De Privilegios/Abuso de Binario nano.md",
     "Escalada De Privilegios/Abuso de Binario Ruby.md",
     "Escalada De Privilegios/Abuso de Binario Vim.md",
     "Escalada De Privilegios/Abuso de Procesos.md",
@@ -189,13 +202,6 @@
     "Maquinas De Dockerlabs/Maquinas Fasiles/Console log.md",
     "Maquinas De Dockerlabs/Maquinas Fasiles/Pequeñas_mentirosas.md",
     "Maquinas De Dockerlabs/Maquinas Fasiles/Move.md",
-    "Maquinas De Dockerlabs/Maquinas Fasiles/Backend.md",
-    "Maquinas De Dockerlabs/Maquinas Fasiles/nodeclimb.md",
-    "Maquinas De Dockerlabs/Maquinas Muy Fasiles/BreakMySSH.md",
-    "Maquinas De Dockerlabs/Maquinas Muy Fasiles/Trust.md",
-    "Maquinas De Dockerlabs/Maquinas Muy Fasiles/HedgeHog.md",
-    "Maquinas De Dockerlabs/Maquinas Fasiles/Reflection.md",
-    "Maquinas De Dockerlabs/Maquinas Muy Fasiles/FirstHacking.md",
     "Conceptos Y Herramientas/sedF0ev64",
     "Attachments/Pasted image 20250506151253.png",
     "Attachments/Pasted image 20250506151102.png",
@@ -209,12 +215,6 @@
     "Attachments/Vacaciones 5.png",
     "Sin nombre",
     "Explotaciones/Tecnologias Explotadas",
-    "Explotaciones/Gestores De Contenido",
-    "Explotaciones",
-    "Conceptos Y Herramientas",
-    "Maquinas De Dockerlabs/Maquinas Fasiles/nodeclimb.docx",
-    "Maquinas De Dockerlabs/Maquinas Fasiles/Where Is My Web Shell.docx",
-    "Maquinas De Dockerlabs/Maquinas Fasiles/Pequeñas_mentirosas.docx",
-    "Escalada De Privilegios"
+    "Explotaciones/Gestores De Contenido"
   ]
 }

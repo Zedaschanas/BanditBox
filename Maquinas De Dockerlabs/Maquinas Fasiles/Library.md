@@ -3,15 +3,15 @@
 >Hoy explotaremos una vulnerabilidad bastante interesante, en este maquina sencillita :3
 >Primero, levantamos la máquina, descomprimiendo el “.zip” y ejecutando el script de automatización:
 
-![\1](Attachments/Pasted%20image%2020250506150925.png)
+![\1](/Attachments/Pasted%20image%2020250506150925.png)
 
 >Levantamos la maquina:
 
-![\1](Attachments/Pasted%20image%2020250506151102.png)
+![\1](/Attachments/Pasted%20image%2020250506151102.png)
 
 >Para verificar a modo de traza la conectividad con la maquina victima, hacemos un ping a la ip que nos proporciona el script "auto_deploy":
 
-![\1](Attachments/Pasted%20image%2020250506151253.png)
+![\1](/Attachments/Pasted%20image%2020250506151253.png)
 _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message Protocol” tipo (Echo Request) a la ip victima, esta misma, al estar en funcionamiento, revisa las cabeceras del paquete para determinar que es para ella, y responde con un (Echo Reply).)
 
 1. _Podemos ver el orden de estas tramas ICMP en el apartado “icmp_seq=”,
@@ -20,7 +20,7 @@ _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message P
 
 >Ya siendo consientes de la conexión entre maquinas, vamos a escanear puertos abiertos en la maquina, para determinar posibles vectores de explotación:
 
-![\1](Attachments/Pasted%20image%2020250506151631.png)
+![\1](/Attachments/Pasted%20image%2020250506151631.png)
 1. _-- min-rate 5000 (quiero tramitar mínimo 5000 paquetes por segundo) esto para que el escaneo vaya con bastante agilidad._
 2. _-n (no deseo que nmap haga una resolución DNS automática)
 3. _-p- (quiero escanear los 65535 puertos del sistema, no los 1000 más comunes, como normalmente hace nmap)._
@@ -29,20 +29,20 @@ _(Con esto en pocas palabras; enviamos tramas ICMP “Internet Control Message P
 
 >Nos encontramos con los puertos 22 y 80, con los servicios OpenSSH y Apache respectivamente. Ya que sus versiones son mas o menos actuales, no buscaremos vulnerabilidades para ellas, en cambio, con la herramienta "whatweb" haremos un reconocimiento de las tecnologías del servicio web Apache que corre por el puerto 80:
 
-**![\1](Attachments/Pasted%20image%2020250506152128.png)
+**![\1](/Attachments/Pasted%20image%2020250506152128.png)
 _Whatweb es una herramienta de reconocimiento web creada en Ruby, esta hecha para identificar tecnologías web (Es capaz de detectar Frameworks, plugins, CMS, etc).
 Por lo general, mediante una petición GET, recolecta información de toda la respuesta (Cookies, código HTML, encabezados), para que luego, el motor de whatweb con REGEX (expresiones regulares) y sus propios plugins (scripts) de Ruby analicen la respuesta en búsqueda de particularidades propias de tecnologías (Como wp-content para WordPress, X-Powered-By para php o /templates/Joomla para Joomla). [Aqui](https://github.com/urbanadventurer/WhatWeb) te dejo el repo oficial con el código fuente de la herramienta.
-![\1](Attachments/Pasted%20image%2020250506154219.png)_
+![\1](/Attachments/Pasted%20image%2020250506154219.png)_
 _Whatweb nos permite modificar la agresividad del escaneo, modificar hilos y hasta usar un proxy, pero para un escaneo sencillo dentro de un entorno controlado, solamente pasamos la url para un análisis simple_
 
 >Whatweb nos indica que la web tiene una pagina por defecto de apache con el titulo "It works"
 
-![\1](Attachments/Pasted%20image%2020250506160626.png)
+![\1](/Attachments/Pasted%20image%2020250506160626.png)
 
 >Ya verificando que no hay nada en la pagina principal ni el código fuente, procedemos a buscar directorios y archivos web.
 >Hay muchas herramientas para enumerar directorios; [Dirb]([https://www.kali.org/tools/dirb/](https://www.kali.org/tools/dirb/) ), [Gobuster]([https://github.com/OJ/gobuster](https://github.com/OJ/gobuster) ), [Wfuzz]([https://www.kali.org/tools/wfuzz/](https://www.kali.org/tools/wfuzz/) ), Pero tal vez la más eficiente es [ffuf]([https://github.com/ffuf/ffuf](https://github.com/ffuf/ffuf) ), así que para usarla:
 
-![\1](Attachments/Pasted%20image%2020250506160933.png)
+![\1](/Attachments/Pasted%20image%2020250506160933.png)
 1. _-c Para que se vea bonito con colorcitos_ ╰(*°▽°*)╯
 2. _-w Para especificar el diccionario que se probará en la url (uso un diccionario de [Seclists](https://github.com/danielmiessler/SecLists) )_
 3. _-t Para indicarle la cantidad de hilos (tareas múltiples) que deseo para la tarea a realizar, en este caso 200_
@@ -51,16 +51,16 @@ _Whatweb nos permite modificar la agresividad del escaneo, modificar hilos y has
 
 >Dentro de la respuesta de ffuf encontramos unos directorios de JavaScript, el index.html y un extraño index.php
 
-![\1](Attachments/Pasted%20image%2020250506162807.png)
-![\1](Attachments/Pasted%20image%2020250506162819.png)
+![\1](/Attachments/Pasted%20image%2020250506162807.png)
+![\1](/Attachments/Pasted%20image%2020250506162819.png)
 
 >Vamos a verlo en la web:
 
-![\1](Attachments/Pasted%20image%2020250506163142.png)
+![\1](/Attachments/Pasted%20image%2020250506163142.png)
 
 >Parece ser una contraseña, ya que tenemos el servicio ssh en el puerto 22, podemos intentar un ataque de fuerza bruta de usuarios, ya teniendo una contraseña:
 
-![\1](Attachments/Pasted%20image%2020250506163432.png)
+![\1](/Attachments/Pasted%20image%2020250506163432.png)
 1. _-L (con este parámetro proporcionamos un diccionario con posibles usuarios, si ya tuviéramos uno pondríamos el parámetro en minúscula "-l" )_
 2. _-p (para indicar la contraseña, si no tuviéramos una, colocamos “-P” y el diccionario para probar contraseñas)_
 3. _ssh:// (para determinar el servicio a atacar, puede ser http// o ftp://)
@@ -68,17 +68,17 @@ _Whatweb nos permite modificar la agresividad del escaneo, modificar hilos y has
 
 > Tenemos usuario:contraseña, así que ingresamos por ssh:
 
-![\1](Attachments/Pasted%20image%2020250506164225.png)
+![\1](/Attachments/Pasted%20image%2020250506164225.png)
 
 >Primero, para tener una shell mas interactiva:
 
-![\1](Attachments/Pasted%20image%2020250506180300.png)
+![\1](/Attachments/Pasted%20image%2020250506180300.png)
 _Aquí le estamos diciendo a la Shell que deseamos que la variable de entorno TERM (responsable de especificar el tipo de terminal usado), sea igual a Xterm.
 Sí TERM no se establece o está mal establecido en la máquina, cosas como clear, nano, vim, less, no funcionan correctamente (Es para tener una experiencia un poco más funcional).
 
 >Para buscar posibles vectores de escalada de privilegios, vamos a listar privilegios:
 
-![\1](Attachments/Pasted%20image%2020250506164423.png)
+![\1](/Attachments/Pasted%20image%2020250506164423.png)
 _Ejecutamos el binario setuid (que siempre se ejecuta como root)“SUDO”, con la flag “-l”. El binario busca los privilegios que el usuario actual tiene descritos en el archivo /etc/sudoers y los muestra por pantalla (Si aplica)_
 1. _(ALL) Permite ejecutar el binario como CUALQUIER usuario, incluido claro, el mas privilegiado_
 2. _NOPASSWD Nos indica que no es necesario ingresar contraseña para ejecutar el binario_
@@ -87,35 +87,35 @@ _Ejecutamos el binario setuid (que siempre se ejecuta como root)“SUDO”, con 
 
 >Vemos que tenemos podemos ejecutar un script como usuario root, al analizarlo un poco, podemos ver que es un script muy sencillo, que copia el contenido de si mismo a la ruta /tmp/script_backup.py con la librería shutil:
 
-![\1](Attachments/Pasted%20image%2020250506164951.png)
+![\1](/Attachments/Pasted%20image%2020250506164951.png)
 _Con "sudo -u root" el usuario Carlos invoca sudo, que verifica permisos en /etc/sudoers. Si tiene permiso para ejecutar cierto binario como root, sudo llama a setuid() para cambiar al usuario root y ejecutar lo siguiente.
 
 >Con el script no podemos hacer mucho, pero, al listar privilegios el la carpeta opt:
 
-![\1](Attachments/Pasted%20image%2020250506165536.png)
+![\1](/Attachments/Pasted%20image%2020250506165536.png)
 
 >Vemos que tenemos Permisos sobre el directorio, siendo asi, para escalar privilegios solo tenemos que eliminar el script original (ya que tenemos permiso para ello) y remplazarlo por uno infectado.
 
-![\1](Attachments/Pasted%20image%2020250506170046.png)
+![\1](/Attachments/Pasted%20image%2020250506170046.png)
 _Con "rm" eliminamos el archivo original_
 
-![\1](Attachments/Pasted%20image%2020250506170119.png)
+![\1](/Attachments/Pasted%20image%2020250506170119.png)
 _Creamos un nuevo archivo del mismo nombre con nano_
 
-![\1](Attachments/Pasted%20image%2020250506170229.png)
+![\1](/Attachments/Pasted%20image%2020250506170229.png)
 _Importamos la librería "os" con ella desde el sistema ejecutamos una /bin/bash
 
 >Ya que al ejecutar el script lo hacemos como usuario root, el proceso hijo de "/bin/bash" tendrá el contexto de aquel usuario:
 
-![\1](Attachments/Pasted%20image%2020250506170658.png)
+![\1](/Attachments/Pasted%20image%2020250506170658.png)
 
 Para escalar privilegios de una forma mucho mas interesante O.O, podemos hacer un "Python Library Hijacking":
 
-![\1](Attachments/Pasted%20image%2020250506172404.png)
+![\1](/Attachments/Pasted%20image%2020250506172404.png)
 
 >Ya que sabemos que librería utiliza el script, vamos a verificar la ruta desde la cual Python empieza a buscar la librería que utiliza el script _(Cuando se inicia el interprete de Python, la Shell inicia un proceso hijo, desde allí, una de las primeras cosas que hace, es configurar las rutas de búsqueda (sys.path), rutas que podemos listar, y si tenemos permiso de escritura en alguna de todas, existe la posibilidad de insertar un script infectado)
 
-![\1](Attachments/Pasted%20image%2020250506173427.png)
+![\1](/Attachments/Pasted%20image%2020250506173427.png)
 _Con este pequeño inline Podemos listar la rutas de ejecución de librerías predeterminadas de Python
 1. _Python3 -c (Para indicar que lo siguiente es un código a ejecutar directamente)
 2. _import sys (Importamos el modulo sys (Es el que contiene información sobre rutas, etc))_
@@ -125,10 +125,10 @@ _Con este pequeño inline Podemos listar la rutas de ejecución de librerías pr
 
 >Vemos que aparece un salto de linea particular en la respuesta, para verlo bien, quitamos el método join del comando anterior:
 
-![\1](Attachments/Pasted%20image%2020250506175240.png)
+![\1](/Attachments/Pasted%20image%2020250506175240.png)
 
 _Lo anterior también lo puedes lograr_
-![\1](Attachments/Pasted%20image%2020250506181428.png)
+![\1](/Attachments/Pasted%20image%2020250506181428.png)
 _desde el interprete de Python_
 
 >Lo que esas pequeñas comillas que el primer comando no nos mostro, nos dicen que el primer directorio donde se buscan las librerías, es donde se encuentra el script, es decir /opt.
@@ -136,11 +136,11 @@ _desde el interprete de Python_
 
 >Creamos nuestro archivo infectado:
 
-![\1](Attachments/Pasted%20image%2020250506180042.png)
+![\1](/Attachments/Pasted%20image%2020250506180042.png)
 
 >Y ejecutamos como root:
 
-![\1](Attachments/Pasted%20image%2020250506180115.png)
+![\1](/Attachments/Pasted%20image%2020250506180115.png)
 
 La maquina es toda nuestra ahora si :3
 

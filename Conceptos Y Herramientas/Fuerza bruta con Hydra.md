@@ -6,7 +6,7 @@
 
 >Un escaneo del mas usual con Hydra seria sobre un servicio SSH, ya con un usuario, encontrando una contraseña:
 
-![BreakMySSH](Attachments/BreakMySSH%207.png)
+![BreakMySSH](/Attachments/BreakMySSH%207.png)
 1. _-l (este parámetro se usa para determinar el usuario que ya tenemos, si no tenemos un usuario, al colocar “-L” podemos incluir una wordlist para atacarlos también)_
 2. _-P (para determinar, una wordlist con posibles contraseñas, si tuviéramos una contraseña y quisiéramos probar usuarios, en este punto colocamos “-p” y la contraseña)_
 3. _ssh:// (para determinar el servicio a atacar)

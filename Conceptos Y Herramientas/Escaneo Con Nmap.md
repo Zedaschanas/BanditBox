@@ -5,7 +5,7 @@
 
 >Uno de los escaneos mas usuales al hacer maquinas CTF (En entornos controlados) es o se parece a:
 
-![\1](Attachments/Pasted%20image%2020250611163341.png)
+![\1](/Attachments/Pasted%20image%2020250611163341.png)
 1. _-- min-rate 5000 (quiero tramitar mínimo 5000 paquetes por segundo) esto para que el escaneo vaya con bastante agilidad._
 2. _-n (no deseo que nmap haga una resolución DNS automática)
 3. _-p- (quiero escanear los 65535 puertos del sistema, no los 1000 más comunes, como normalmente hace nmap)._
@@ -14,15 +14,15 @@
 
 >El escaneo anterior nos da un resultado bastante completo y rápido sobre los puertos abiertos de una maquina y sus servicios. Pero, no engloba prácticamente nada de todas las funciones que tiene la herramienta, haciendo algunos ejemplos pequeños:
 
-![\1](Attachments/Pasted%20image%2020250611054047.png)
+![\1](/Attachments/Pasted%20image%2020250611054047.png)
 _De esta manera, con el parámetro -S falsificamos la ip de origen (Todos los paquetes parecen venir de la ip 172.17.0.1). Con -e, determinamos la interfaz de red a la que pertenecen las IPs_
 
-![\1](Attachments/Pasted%20image%2020250611164123.png)
+![\1](/Attachments/Pasted%20image%2020250611164123.png)
 1. _Con el parámetro -sS evitamos que se complete el estandarizado "Thee-Way Handshake", es decir, no se completa la conexión de paquetes estandarizada para determinar que un puerto esta abierto, esto hace el escaneo LIGERAMENTE mas sigiloso y un poco mas rápido.
 2. _-n para no hacer resolución DNS
 3. _Con -D creamos IPs señuelos, en donde se mezclara el trafico real de nuestra ip hacia la maquina victima con el de los señuelos "172.17.0.4" y "172.17.0.3". Es decir, el objetivo vera ataques desde múltiples IPs simultáneamente, haciendo mas difícil el reconocimiento.
 
-![\1](Attachments/Pasted%20image%2020250611171131.png)
+![\1](/Attachments/Pasted%20image%2020250611171131.png)
 _Este comando es ultra sigiloso, perfecto para entornos con detección de escaneo automática_
 1. 1. _Con el parámetro -sS evitamos que se complete el estandarizado "Thee-Way Handshake", es decir, no se completa la conexión de paquetes estandarizada para determinar que un puerto esta abierto, esto hace el escaneo LIGERAMENTE mas sigiloso y un poco mas rápido.
 2.  _-Pn (Omite el descubrimiento de Host)_

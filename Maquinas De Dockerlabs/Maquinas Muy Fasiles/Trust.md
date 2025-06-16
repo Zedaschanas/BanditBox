@@ -1,7 +1,7 @@
 
 ---
 
-**![Trust](Attachments/Trust.png)**
+**![Trust](/Attachments/Trust.png)**
 
 Una maquina fácil y agradable, para un día agradable…
 
@@ -15,15 +15,15 @@ El dia de hoy, con esta máquina aprenderemos los conceptos basicos de:
 
 >Ahora bien, empezamos por descomprimir el archivo de la maquina con “unzip” y levantarla con el script automatizado que nos entrega DOCKERLABS [https://dockerlabs.es](https://dockerlabs.es)
 
-![Trust](Attachments/Trust%201.png)
+![Trust](/Attachments/Trust%201.png)
 
 >A modo de traza y para afianzar conceptos, procedemos a hacer un pequeño escaneo de la red con “arp-scan” para encontrar la IP victima (completamente innecesario, ya que el script nos arroja la ip de la máquina).
 
-![Trust](Attachments/Trust%202.png)
+![Trust](/Attachments/Trust%202.png)
 
 >Una vez encontrada la IP victima, hacemos un escaneo bastante fuerte con nmap (al ser un entorno local y controlado, no debemos preocuparnos por romper algo, o ser incognitos)
 
-![Trust](Attachments/Trust%203.png)
+![Trust](/Attachments/Trust%203.png)
 1. _-- min-rate 5000 (quiero tramitar mínimo 5000 paquetes por segundo) esto para que el escaneo vaya con bastante agilidad._
 2. _-n (no deseo que nmap haga una resolución DNS automática)
 3. _-p- (quiero escanear los 65535 puertos del sistema, no los 1000 más comunes, como normalmente hace nmap)._
@@ -32,17 +32,17 @@ _El segundo escaneo, hecho al encontrar los puertos abiertos de la máquina, se 
 
 >Dentro del escaneo de Nmap encontramos el puerto 22 que pertenece al servicio SSH, y el puerto 80 del servicio APACHE. Con la Herramienta “Searchsploit” podemos buscar alguna vulnerabilidad conocida para las versiones de estos servicios.
 
-![Trust](Attachments/Trust%204.png)
+![Trust](/Attachments/Trust%204.png)
 
 >Fue tristemente ineficiente, así que antes de intentar algo con el puerto 22, vamos a analizar el puerto 80
 
-![Trust](Attachments/Trust%205.png)
+![Trust](/Attachments/Trust%205.png)
 
 >Realmente no hay demasiado por ver, es una pagina por defecto del servicio apache, así que, para ver si hay algo escondido, vamos a enumerar directorios…
 
 Hay muchas herramientas para enumerar directorios; [Dirb]([https://www.kali.org/tools/dirb/](https://www.kali.org/tools/dirb/) ), [Gobuster]([https://github.com/OJ/gobuster](https://github.com/OJ/gobuster) ), [ffuf]([https://github.com/ffuf/ffuf](https://github.com/ffuf/ffuf) ), Hoy vamos a usar [Wfuzz]([https://www.kali.org/tools/wfuzz/](https://www.kali.org/tools/wfuzz/) ), así que para ello:
 
-![Trust](Attachments/Trust%206.png)
+![Trust](/Attachments/Trust%206.png)
 
 1. _-c (Para que los códigos de estado en la respuesta tengan colorcitos)_ O.O
 2. _-w (Para indicar la Wordlist o lista de palabras con la que Wfuzz aplicara fuerza Bruta, el Wordlist que usamos es de Seclist, lo puedes encontrar aqui:_[_https://github.com/danielmiessler/SecLists_](https://github.com/danielmiessler/SecLists) _)_
@@ -53,15 +53,15 @@ Hay muchas herramientas para enumerar directorios; [Dirb]([https://www.kali.org/
 
 >En este caso, no obtenemos nada, así que probando con archivos, concatenamos a la palabra interna FUZZ un .php para buscar archivos PHP
 
-![Trust](Attachments/Trust%207.png)
+![Trust](/Attachments/Trust%207.png)
 
 >Esto nos revela un archivo secret.php, al abrirlo nos encontramos con un pequeño troleo del creador:
 
-![Trust](Attachments/Trust%208.png)
+![Trust](/Attachments/Trust%208.png)
 
 >Pero, nos ha dado un posible nombre de usuario; Mario, así que podemos probar ingresar por el servicio ssh con este nombre de usuario y una fuerza bruta a la contraseña, Con la herramienta “Hydra” será rápido:
 
-![Trust](Attachments/Trust%209.png)
+![Trust](/Attachments/Trust%209.png)
 
 1. _-l (este parámetro se usa determinar el usuario que ya tenemos, si no tuviéramos un usuario, al colocar “-L” podemos incluir una Wordlist para probar combinatorias también)_
 2. _-P (para determinar, una wordlist con posibles contraseñas, si tuviéramos una contraseña y quisiéramos probar usuarios, en este punto colocamos “-p” y la contraseña)_
@@ -69,11 +69,11 @@ Hay muchas herramientas para enumerar directorios; [Dirb]([https://www.kali.org/
 
 >Así que ya sabiendo el usuario y la contraseña, entramos…
 
-![Trust](Attachments/Trust%2010.png)
+![Trust](/Attachments/Trust%2010.png)
 
 >Una vez ingresado al sistema, podemos proceder de diferentes maneras con la escalada de privilegios. Con “sudo -l” podemos listar los binarios que tenemos permitido ejecutar como root.
 
-![Trust](Attachments/Trust%2011.png)
+![Trust](/Attachments/Trust%2011.png)
 1. _(ALL) Permite ejecutar el binario como CUALQUIER usuario, incluido claro, el mas privilegiado_
 2. _/usr/bin/vim Binario sobre el que tenemos privilegios (cuya ruta está definida arriba en “secure_path”_
 
@@ -85,7 +85,7 @@ Hay muchas herramientas para enumerar directorios; [Dirb]([https://www.kali.org/
 
 _Todo lo anterior se puede simplificar con ejecutar “sudo /usr/bin/vim -c ‘!/bin/bash’” para inyectar de una vez el comando
 
-![Trust](Attachments/Trust%2012.png)
+![Trust](/Attachments/Trust%2012.png)
 
 >Y Listo, la maquina es toda nuestra :3
 
